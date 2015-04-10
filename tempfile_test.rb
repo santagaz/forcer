@@ -12,4 +12,4 @@ File.open(filename, 'wb') do |file|
   p "file path = #{file.path}"
   p "file content : #{file}"
 end
-FileUtils.rm_f path
+FileUtils.rm_f filename
