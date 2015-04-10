@@ -12,7 +12,6 @@ options = {
 }
 enterprise_client = Savon.client(options)
 # p enterprise.operations
-# username: "gaziz@eventbrite.com.comitydev", password: "?kMMTR[d}X7`Fd}>@T.fpX1t6k2We39Qtq42NKbnLWSQ"
 
 message = {
   username: "gaziz@eventbrite.com.comitydev",
@@ -24,8 +23,6 @@ response = enterprise_client.call(:login, message: message)
 current_session_id = response.body[:login_response][:result][:session_id]
 metadata_server_url = response.body[:login_response][:result][:metadata_server_url]
 # p "session id = #{current_session_id}"
-# p "body = #{response.body}"
-#p "server url = #{server_url}"
 
 options = {
   wsdl: "./metadata.wsdl",
@@ -47,4 +44,4 @@ list_metadata_request = File.read("./list_metadata_request.xml");
 xml_param = list_metadata_request % [current_session_id, queries]
 #p "xml request body: #{xml_param}"
 response = client.call(:list_metadata, :xml => xml_param)
-p response
+#p response
