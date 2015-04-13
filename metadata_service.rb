@@ -6,26 +6,28 @@ module Metadata
 
   class MetadataService
 
+    def initialize()
+      @metadata_client = get_client
+    end
+
     def list
-      client = get_client
       queries = "<met:type>CustomObject</met:type><met:folder>CustomObject</met:folder>"
       list_metadata_request = File.read("./list_metadata_request.xml");
       xml_param = list_metadata_request % [@current_session_id, queries, API_VERSION]
-      client.call(:list_metadata, :xml => xml_param)
+      @metadata_client.call(:list_metadata, :xml => xml_param)
     end
 
     def deploy
-      # prepare metadata client and sfdc project zipfile
-      client = get_client
       target_dir_name = "/Users/gt/Desktop/TestProject"
       dir_zip_service = ProjectDirectoryService.new(target_dir_name)
       zip_name = dir_zip_service.write
-      zip_file = File.open(zip_name, "rb");
+      p "zip_name = #{zip_name}"
+      zip_file = File.open(zip_name, "r");
 
       # TODO read options from console arguments
       options = {
         singlePackage: true,
-        tollbackOnError: true,
+        rollbackOnError: true,
         checkOnly: false,
         allowMissingFiles: false,
         runAllTests: false,
@@ -44,7 +46,10 @@ module Metadata
 
       deploy_request_xml = File.read("./deploy_request.xml");
       xml_param = deploy_request_xml % [debug_options_snippet, @current_session_id, zip_file, deploy_options_snippet]
-      client.call(:deploy, :xml => xml_param)
+      @metadata_client.call(:deploy, :xml => xml_param)
+      
+    ensure
+      FileUtils.rm_f zip_name
     end
 
     private
@@ -93,5 +98,6 @@ end # module Metadata
 
 # test area
 
-metadata_client = Metadata::MetadataService.new()
-# p metadata_client.list
+metadata_service = Metadata::MetadataService.new()
+# p metadata_service.list
+metadata_service.deploy
