@@ -22,13 +22,13 @@ module Metadata
       dir_zip_service = ProjectDirectoryService.new(target_dir_name)
       zip_name = dir_zip_service.write
       p "zip_name = #{zip_name}"
-      zip_file = File.open(zip_name, "r");
+      blob_zip = Base64.encode64(File.open(zip_name, "rb").read);
 
       # TODO read options from console arguments
       options = {
         singlePackage: true,
         rollbackOnError: true,
-        checkOnly: false,
+        checkOnly: true,
         allowMissingFiles: false,
         runAllTests: false,
         ignoreWarnings: false
@@ -45,7 +45,8 @@ module Metadata
       debug_options_snippet = "" #by default no debug options
 
       deploy_request_xml = File.read("./deploy_request.xml");
-      xml_param = deploy_request_xml % [debug_options_snippet, @current_session_id, zip_file, deploy_options_snippet]
+      xml_param = deploy_request_xml % [debug_options_snippet, @current_session_id, blob_zip, deploy_options_snippet]
+      # p "deployment_xml : #{xml_param}"
       @metadata_client.call(:deploy, :xml => xml_param)
       
     ensure
@@ -100,4 +101,4 @@ end # module Metadata
 
 metadata_service = Metadata::MetadataService.new()
 # p metadata_service.list
-metadata_service.deploy
+p metadata_service.deploy
