@@ -2,14 +2,15 @@ require 'tmp_file'
 
 module FileNameUtility
   PATH = "/tmp"
-  def random_filename(extension = 'zip')
-    "#{SecureRandom.urlsafe_base64}.#{extension}"
-  end
+  class << self
+    def random_filename(extension = 'zip')
+      "#{SecureRandom.urlsafe_base64}.#{extension}"
+    end
 
-  def tempfile_name(extension = 'zip')
-    "#{PATH}/#{random_filename(extension)}"
+    def tempfile_name(extension = 'zip')
+      "#{PATH}/#{random_filename(extension)}"
+    end
   end
-
 end
 
 #filename = "#{path}/#{random_filename}"
