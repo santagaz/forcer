@@ -25,8 +25,9 @@ class ProjectZipGenerator
     write_entries(entries, "")
   ensure
     @zip_io.close()
-    # FileUtils.rm_f @output_file_name
-    FileUtils.mv(@output_file_name, "/Users/gt/Desktop/test_zip.zip")
+    #FileUtils.rm_f @output_file_name
+    # FileUtils.mv(@output_file_name, "/Users/gt/Desktop/test_zip.zip")
+    @output_file_name
   end
 
   private
