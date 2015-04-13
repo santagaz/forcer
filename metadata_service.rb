@@ -1,9 +1,53 @@
-require 'savon'
+require "savon"
+require "./project_directory_service.rb"
 
 module Metadata
   API_VERSION = 33.0
 
   class MetadataService
+
+    def list
+      client = get_client
+      queries = "<met:type>CustomObject</met:type><met:folder>CustomObject</met:folder>"
+      list_metadata_request = File.read("./list_metadata_request.xml");
+      xml_param = list_metadata_request % [@current_session_id, queries, API_VERSION]
+      client.call(:list_metadata, :xml => xml_param)
+    end
+
+    def deploy
+      # prepare metadata client and sfdc project zipfile
+      client = get_client
+      target_dir_name = "/Users/gt/Desktop/TestProject"
+      dir_zip_service = ProjectDirectoryService.new(target_dir_name)
+      zip_name = dir_zip_service.write
+      zip_file = File.open(zip_name, "rb");
+
+      # TODO read options from console arguments
+      options = {
+        singlePackage: true,
+        tollbackOnError: true,
+        checkOnly: false,
+        allowMissingFiles: false,
+        runAllTests: false,
+        ignoreWarnings: false
+      }
+
+      # prepare xml for deployment
+      deploy_options_snippet = ""
+      options.each do |k, v|
+        key = k.to_s
+        val = v.to_s
+        deploy_options_snippet += "<met:#{key}>#{val}</met:#{key}>"
+      end
+
+      debug_options_snippet = "" #by default no debug options
+
+      deploy_request_xml = File.read("./deploy_request.xml");
+      xml_param = deploy_request_xml % [debug_options_snippet, @current_session_id, zip_file, deploy_options_snippet]
+      client.call(:deploy, :xml => xml_param)
+    end
+
+    private
     def login
       endpoint_url = "https://test.salesforce.com"
       options = {
@@ -44,16 +88,10 @@ module Metadata
       Savon.client(options)
     end
 
-    def list_metadata
-      client = get_client
-      queries = "<met:type>CustomObject</met:type><met:folder>CustomObject</met:folder>"
-      list_metadata_request = File.read("./list_metadata_request.xml");
-      xml_param = list_metadata_request % [@current_session_id, queries]
-      client.call(:list_metadata, :xml => xml_param)
-    end
-
   end # class MetadataService
 end # module Metadata
 
+# test area
+
 metadata_client = Metadata::MetadataService.new()
-p metadata_client.list_metadata
+# p metadata_client.list

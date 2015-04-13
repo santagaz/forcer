@@ -10,7 +10,7 @@
          <met:queries>
           %s
          </met:queries>
-         <met:asOfVersion>33.0</met:asOfVersion>
+         <met:asOfVersion>%s</met:asOfVersion>
       </met:listMetadata>
    </soapenv:Body>
 </soapenv:Envelope>

@@ -1,35 +1,19 @@
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:met="http://soap.sforce.com/2006/04/metadata">
    <soapenv:Header>
-      <met:CallOptions>
-         <met:client>?</met:client>
-      </met:CallOptions>
       <met:DebuggingHeader>
-         <!--Zero or more repetitions:-->
-         <met:categories>
-            <met:category>?</met:category>
-            <met:level>?</met:level>
-         </met:categories>
-         <met:debugLevel>?</met:debugLevel>
+        <!-- insert debuggin level setting here -->
+        %s
       </met:DebuggingHeader>
       <met:SessionHeader>
-         <met:sessionId>?</met:sessionId>
+         <met:sessionId>%s</met:sessionId>
       </met:SessionHeader>
    </soapenv:Header>
    <soapenv:Body>
       <met:deploy>
-         <met:ZipFile>cid:1093608430960</met:ZipFile>
+        <met:ZipFile>%s</met:ZipFile>
          <met:DeployOptions>
-            <met:allowMissingFiles>?</met:allowMissingFiles>
-            <met:autoUpdatePackage>?</met:autoUpdatePackage>
-            <met:checkOnly>?</met:checkOnly>
-            <met:ignoreWarnings>?</met:ignoreWarnings>
-            <met:performRetrieve>?</met:performRetrieve>
-            <met:purgeOnDelete>?</met:purgeOnDelete>
-            <met:rollbackOnError>?</met:rollbackOnError>
-            <met:runAllTests>?</met:runAllTests>
-            <!--Zero or more repetitions:-->
-            <met:runTests>?</met:runTests>
-            <met:singlePackage>?</met:singlePackage>
+           <!-- deploy options like check_only, run_tests, etc -->
+           %s
          </met:DeployOptions>
       </met:deploy>
    </soapenv:Body>
