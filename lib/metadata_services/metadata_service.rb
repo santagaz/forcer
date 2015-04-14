@@ -62,7 +62,7 @@ module Metadata
       endpoint_url = "https://test.salesforce.com"
       options = {
         endpoint: "#{endpoint_url}/services/Soap/c/#{API_VERSION}",
-        wsdl: "./enterprise.wsdl", 
+        wsdl: File.expand_path("../enterprise.wsdl", __FILE__),
         :headers => {
           "Authentication" => "secret"
         }
@@ -84,7 +84,7 @@ module Metadata
     def get_client
       login
       options = {
-        wsdl: "./metadata.wsdl",
+        wsdl: File.expand_path("../metadata.wsdl", __FILE__),
         endpoint: @metadata_server_url,
         soap_header: {
           "tns:SessionHeader" => {
@@ -102,6 +102,6 @@ end # module Metadata
 
 # test area
 
-metadata_service = Metadata::MetadataService.new(File.expand_path("../../../tmp/TestProject", __FILE__))
+# metadata_service = Metadata::MetadataService.new(File.expand_path("../../../tmp/TestProject", __FILE__))
 # p metadata_service.list
- p metadata_service.deploy.body[:deploy_response][:result][:state]
+# p metadata_service.deploy.body[:deploy_response][:result][:state]
