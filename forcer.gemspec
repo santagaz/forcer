@@ -6,7 +6,7 @@ require 'forcer/version'
 Gem::Specification.new do |spec|
   spec.name          = "forcer"
   spec.version       = Forcer::VERSION
-  spec.authors       = ["gazazello"]
+  spec.authors       = ["gaziz tazhenov"]
   spec.email         = ["gaziztazhenov@gmail.com"]
 
   spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
