@@ -6,7 +6,7 @@ module Metadata
 
     API_VERSION = 33.0 # todo move to constants file
 
-    def initialize(target_dir_name = File.expand_path("../../tmp", __FILE__))
+    def initialize(target_dir_name = File.expand_path("./", __FILE__))
       # todo check if target_dir_name exists
       @target_dir_name = target_dir_name
       @metadata_client = get_client
@@ -23,10 +23,8 @@ module Metadata
 
     def deploy
       dir_zip_service = ProjectDirectoryService.new(@target_dir_name)
-      p "directory service : #{dir_zip_service}"
       zip_name = dir_zip_service.write
-      p "zip file name : #{zip_name}"
-      blob_zip = Base64.encode64(File.open(zip_name, "rb").read);
+      blob_zip = Base64.encode64(File.open(zip_name, "rb").read)
 
       # todo read options from console arguments
       options = {
@@ -51,14 +49,16 @@ module Metadata
 
       deploy_request_xml = File.read(File.dirname(__FILE__) + "/deploy_request.xml");
       xml_param = deploy_request_xml % [debug_options_snippet, @current_session_id, blob_zip, deploy_options_snippet]
-      @metadata_client.call(:deploy, :xml => xml_param)
-      
+      response = @metadata_client.call(:deploy, :xml => xml_param)
+      p "DEPLOYMENT FAILED. CHECK DEPLOYMENT STATUS LOG IN SALESFORCE ORG." unless response.body[:deploy_response][:result] == "Queued"
     ensure
       FileUtils.rm_f zip_name
+
     end
 
     private
     def login
+      # todo read endpoint_url from yaml
       endpoint_url = "https://test.salesforce.com"
       options = {
         endpoint: "#{endpoint_url}/services/Soap/c/#{API_VERSION}",
@@ -69,6 +69,7 @@ module Metadata
       }
       enterprise_client = Savon.client(options)
 
+      # todo read credentials from yaml
       message = {
         username: "gaziz@eventbrite.com.comitydev",
         password: "?kMMTR[d}X7`Fd}>@T.fpX1t6k2We39Qtq42NKbnLWSQ"
@@ -101,7 +102,6 @@ end # module Metadata
 
 # test area
 
-p "path : #{File.expand_path("../../../tmp/TestProject", __FILE__)}"
 metadata_service = Metadata::MetadataService.new(File.expand_path("../../../tmp/TestProject", __FILE__))
 # p metadata_service.list
- p metadata_service.deploy
+ p metadata_service.deploy.body[:deploy_response][:result][:state]
