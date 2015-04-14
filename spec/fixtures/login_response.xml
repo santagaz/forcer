@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns="urn:enterprise.soap.sforce.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<soapenv:Body>
+  <loginResponse>
+    <result>
+      <metadataServerUrl>https://test.salesforce.com/services/Soap/m/33.0/00DS0000003KXhi</metadataServerUrl>
+      <passwordExpired>false</passwordExpired>
+      <sandbox>true</sandbox>
+      <serverUrl>https://test.salesforce.com/services/Soap/c/33.0/00DS0000003KXhi</serverUrl>
+      <sessionId>test_session_id.I3wFGYR723QUenOJ3</sessionId>
+      <userId>test_user_id</userId>
+      <userInfo>
+        <accessibilityMode>false</accessibilityMode>
+        <currencySymbol xsi:nil="true" />
+        <orgAttachmentFileSizeLimit>5242880</orgAttachmentFileSizeLimit>
+        <orgDefaultCurrencyIsoCode xsi:nil="true" />
+        <orgDisallowHtmlAttachments>false</orgDisallowHtmlAttachments>
+        <orgHasPersonAccounts>false</orgHasPersonAccounts>
+        <organizationId>test_organization_id</organizationId>
+        <organizationMultiCurrency>true</organizationMultiCurrency>
+        <organizationName>Test_Company_Inc</organizationName>
+        <profileId>test_profile_id</profileId>
+        <roleId>test_role_id</roleId>
+        <sessionSecondsValid>14400</sessionSecondsValid>
+        <userDefaultCurrencyIsoCode>USD</userDefaultCurrencyIsoCode>
+        <userEmail>testemail@testserver.com</userEmail>
+        <userFullName>TestFirstName TestLastName</userFullName>
+        <userId>test_user_id</userId>
+        <userLanguage>en_US</userLanguage>
+        <userLocale>en_US</userLocale>
+        <userName>test_username</userName>
+        <userTimeZone>SantaClara/CA</userTimeZone>
+        <userType>Standard</userType>
+        <userUiSkin>Theme3</userUiSkin>
+      </userInfo>
+    </result>
+  </loginResponse>
+</soapenv:Body>
+</soapenv:Envelope>
