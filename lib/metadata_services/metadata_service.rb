@@ -1,30 +1,34 @@
 require "savon"
-require "./project_directory_service.rb"
+require File.dirname(__FILE__) + "/project_directory_service.rb"
 
 module Metadata
-  API_VERSION = 33.0
-
   class MetadataService
 
-    def initialize()
+    API_VERSION = 33.0 # todo move to constants file
+
+    def initialize(target_dir_name = File.expand_path("../../tmp", __FILE__))
+      # todo check if target_dir_name exists
+      @target_dir_name = target_dir_name
       @metadata_client = get_client
     end
 
     def list
+      # todo reference file with all types
       queries = "<met:type>CustomObject</met:type><met:folder>CustomObject</met:folder>"
-      list_metadata_request = File.read("./list_metadata_request.xml");
+
+      list_metadata_request = File.read(File.dirname(__FILE__) + "/list_metadata_request.xml")
       xml_param = list_metadata_request % [@current_session_id, queries, API_VERSION]
       @metadata_client.call(:list_metadata, :xml => xml_param)
     end
 
     def deploy
-      target_dir_name = "/Users/gt/Desktop/TestProject"
-      dir_zip_service = ProjectDirectoryService.new(target_dir_name)
+      dir_zip_service = ProjectDirectoryService.new(@target_dir_name)
+      p "directory service : #{dir_zip_service}"
       zip_name = dir_zip_service.write
-      p "zip_name = #{zip_name}"
+      p "zip file name : #{zip_name}"
       blob_zip = Base64.encode64(File.open(zip_name, "rb").read);
 
-      # TODO read options from console arguments
+      # todo read options from console arguments
       options = {
         singlePackage: true,
         rollbackOnError: true,
@@ -39,14 +43,14 @@ module Metadata
       options.each do |k, v|
         key = k.to_s
         val = v.to_s
+        # todo take care of array options
         deploy_options_snippet += "<met:#{key}>#{val}</met:#{key}>"
       end
 
       debug_options_snippet = "" #by default no debug options
 
-      deploy_request_xml = File.read("./deploy_request.xml");
+      deploy_request_xml = File.read(File.dirname(__FILE__) + "/deploy_request.xml");
       xml_param = deploy_request_xml % [debug_options_snippet, @current_session_id, blob_zip, deploy_options_snippet]
-      # p "deployment_xml : #{xml_param}"
       @metadata_client.call(:deploy, :xml => xml_param)
       
     ensure
@@ -64,7 +68,6 @@ module Metadata
         }
       }
       enterprise_client = Savon.client(options)
-      # p enterprise.operations
 
       message = {
         username: "gaziz@eventbrite.com.comitydev",
@@ -79,7 +82,6 @@ module Metadata
 
     def get_client
       login
-      # p "session id = #{current_session_id}"
       options = {
         wsdl: "./metadata.wsdl",
         endpoint: @metadata_server_url,
@@ -99,6 +101,7 @@ end # module Metadata
 
 # test area
 
-metadata_service = Metadata::MetadataService.new()
+p "path : #{File.expand_path("../../../tmp/TestProject", __FILE__)}"
+metadata_service = Metadata::MetadataService.new(File.expand_path("../../../tmp/TestProject", __FILE__))
 # p metadata_service.list
-p metadata_service.deploy
+ p metadata_service.deploy
