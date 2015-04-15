@@ -38,6 +38,10 @@ describe Metadata::MetadataService do
     it "authenticates in sfdc org" do
       expect(service.current_session_id).to eq("test_session_id")
     end
+
+    it "creates soap metadata client" do
+      # expect(service.metadata_client).to be(not(nil))
+    end
   end
 
 end
