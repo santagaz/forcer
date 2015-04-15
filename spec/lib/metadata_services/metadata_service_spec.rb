@@ -46,7 +46,7 @@ describe Metadata::MetadataService do
     end
 
     it "creates metadata client" do
-      expect(@service.metadata_client.operations).to
+      expect(@service.metadata_client.operations).to include(:deploy, :list_metadata)
     end
   end
 
