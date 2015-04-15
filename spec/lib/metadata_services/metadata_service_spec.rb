@@ -1,6 +1,8 @@
 require "spec_helper"
 require_relative "../../../lib/metadata_services/metadata_service"
 require "savon/mock/spec_helper"
+require "matchers/include_xml_tag"
+require "mocks/mock_response"
 
 describe Metadata::MetadataService do
 
@@ -55,8 +57,20 @@ describe Metadata::MetadataService do
       @service.metadata_client = @metadata
     end
 
+    # it "receives xml template" do
+    #   allow(@metadata).to receive(:deploy) do |xml|
+    #     tag = "<sessionId>test_session_id</sessionId>"
+    #     expect(xml).to include_xml_tag(tag)
+    #   end
+    #
+    #   @service.deploy
+    # end
+
     it "queues deployment" do
-      allow(@metadata).to receive(:deploy).with(any_args) { "Queued" }
+      allow(@metadata).to receive(:call).with(:deploy, any_args) do
+        MockResponse.new
+      end
+      @service.deploy
     end
   end
 end
