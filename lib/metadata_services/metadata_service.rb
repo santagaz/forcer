@@ -5,9 +5,13 @@ module Metadata
   class MetadataService
 
     API_VERSION = 33.0 # todo move to constants file
+    attr_accessor :metadata_client, :current_session_id
 
-    def initialize(target_dir_name = File.expand_path("./", __FILE__))
+    def initialize(target_dir_name = File.expand_path("./", __FILE__), args = {})
+      # todo read credentials from yaml
       # todo check if target_dir_name exists
+      # todo read endpoint_url from yaml
+      @args = args
       @target_dir_name = target_dir_name
       @metadata_client = get_client
     end
@@ -50,7 +54,11 @@ module Metadata
       deploy_request_xml = File.read(File.dirname(__FILE__) + "/deploy_request.xml");
       xml_param = deploy_request_xml % [debug_options_snippet, @current_session_id, blob_zip, deploy_options_snippet]
       response = @metadata_client.call(:deploy, :xml => xml_param)
-      p "DEPLOYMENT FAILED. CHECK DEPLOYMENT STATUS LOG IN SALESFORCE ORG." unless response.body[:deploy_response][:result] == "Queued"
+      if response.body[:deploy_response][:result] == "Queued"
+        p "DEPLOYMENT FAILED. CHECK DEPLOYMENT STATUS LOG IN SALESFORCE ORG."
+      else
+        p "DEPLOYMENT STARTED. CHECK DEPLOYMENT STATUS IN SALESFORCE ORG."
+      end
     ensure
       FileUtils.rm_f zip_name
 
@@ -58,8 +66,7 @@ module Metadata
 
     private
     def login
-      # todo read endpoint_url from yaml
-      endpoint_url = "https://test.salesforce.com"
+      endpoint_url = @args[:host]
       options = {
         endpoint: "#{endpoint_url}/services/Soap/c/#{API_VERSION}",
         wsdl: File.expand_path("../enterprise.wsdl", __FILE__),
@@ -69,14 +76,14 @@ module Metadata
       }
       enterprise_client = Savon.client(options)
 
-      # todo read credentials from yaml
       message = {
-        username: "gaziz@eventbrite.com.comitydev",
-        password: "?kMMTR[d}X7`Fd}>@T.fpX1t6k2We39Qtq42NKbnLWSQ"
+        username: @args[:username],
+        password: @args[:password] + @args[:security_token]
       }
 
       # === login
       response = enterprise_client.call(:login, message: message)
+      # p "login response : #{response}"
       @current_session_id = response.body[:login_response][:result][:session_id]
       @metadata_server_url = response.body[:login_response][:result][:metadata_server_url]
     end
@@ -94,7 +101,7 @@ module Metadata
         read_timeout: 60 * 10,
         open_timeout: 60 * 10
       }
-      Savon.client(options)
+      return Savon.client(options)
     end
 
   end # class MetadataService
@@ -103,5 +110,5 @@ end # module Metadata
 # test area
 
 # metadata_service = Metadata::MetadataService.new(File.expand_path("../../../tmp/TestProject", __FILE__))
-# p metadata_service.list
-# p metadata_service.deploy.body[:deploy_response][:result][:state]
+# p metadata_service.list.body
+# p metadata_service.deploy

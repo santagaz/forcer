@@ -3,11 +3,11 @@
 <soapenv:Body>
   <loginResponse>
     <result>
-      <metadataServerUrl>https://test.salesforce.com/services/Soap/m/33.0/00DS0000003KXhi</metadataServerUrl>
+      <metadataServerUrl>https://fake.salesforce.com/services/Soap/m/33.0/00DS0000003KXhi</metadataServerUrl>
       <passwordExpired>false</passwordExpired>
       <sandbox>true</sandbox>
-      <serverUrl>https://test.salesforce.com/services/Soap/c/33.0/00DS0000003KXhi</serverUrl>
-      <sessionId>test_session_id.I3wFGYR723QUenOJ3</sessionId>
+      <serverUrl>https://fake.salesforce.com/services/Soap/c/33.0/00DS0000003KXhi</serverUrl>
+      <sessionId>test_session_id</sessionId>
       <userId>test_user_id</userId>
       <userInfo>
         <accessibilityMode>false</accessibilityMode>

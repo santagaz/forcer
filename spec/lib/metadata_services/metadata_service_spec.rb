@@ -6,22 +6,37 @@ describe Metadata::MetadataService do
 
   include Savon::SpecHelper
 
+  let(:args) {
+    {
+      host: "https://fake.salesforce.com",
+      username: "test_username",
+      password: "test_password",
+      security_token: "test_token"
+    }
+  }
+
+  # prepare savon mock for soap calls
   before(:all) do
     savon.mock!
     fixture_login_response = File.read("spec/fixtures/login_response.xml")
-    savon.expects(:login).with(anything).returns(fixture_login_response)
+    message = {
+        username: "test_username",
+        password: "test_passwordtest_token"
+    }
+    savon.expects(:login).with(message: message).returns(fixture_login_response)
   end
 
   after(:all) { savon.unmock! }
 
   # runs after savon is mocked
   let(:service) { Metadata::MetadataService.new(
-      File.expand_path("../../../fixtures/TestProject", __FILE__)
+      File.expand_path("../../../fixtures/TestProject", __FILE__),
+      args
   ) }
 
   describe "#initialize" do
     it "authenticates in sfdc org" do
-      expect(service.current_session_id).to be("test_session_id")
+      expect(service.current_session_id).to eq("test_session_id")
     end
   end
 

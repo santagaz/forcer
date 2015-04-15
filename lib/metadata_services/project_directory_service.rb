@@ -7,21 +7,18 @@ module Metadata
 
     def initialize(input_dir_name = ".")
       @input_dir_name = input_dir_name
-      p "input dir name : #{@input_dir_name}"
       @output_file_name = tempfile_name("zip")
-      p "output file name : #{@output_file_name}"
       @zip_io = Zip::File.open(@output_file_name, Zip::File::CREATE)
     end
 
     # Create zip file with contents of force.com project
     # Return absolute path to the file
     def write
-      p "output file name : #{@output_file_name}"
       # todo check if package.xml exists
       entries = dir_content(@input_dir_name)
       write_entries(entries, "")
     ensure
-      @zip_io.close()
+      @zip_io.close
 
       return @output_file_name
     end
@@ -57,7 +54,6 @@ module Metadata
     # Creates random string to guarantee uniqueness of filename
     # Adds extension to filename
     def random_filename(extension)
-      p "random string : #{SecureRandom.urlsafe_base64}"
       return "#{SecureRandom.urlsafe_base64}.#{extension}"
     end
 
