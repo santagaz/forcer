@@ -57,14 +57,15 @@ describe Metadata::MetadataService do
       @service.metadata_client = @metadata
     end
 
-    # it "receives xml template" do
-    #   allow(@metadata).to receive(:deploy) do |xml|
-    #     tag = "<sessionId>test_session_id</sessionId>"
-    #     expect(xml).to include_xml_tag(tag)
-    #   end
-    #
-    #   @service.deploy
-    # end
+    it "receives xml template" do
+      allow(@metadata).to receive(:call).with(:deploy, any_args) do |name, message|
+        tag = "<met:sessionId>test_session_id</met:sessionId>"
+        expect(message[:xml]).to include_xml_tag(tag)
+        MockResponse.new
+      end
+
+      @service.deploy
+    end
 
     it "queues deployment" do
       allow(@metadata).to receive(:call).with(:deploy, any_args) do
