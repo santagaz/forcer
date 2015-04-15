@@ -61,7 +61,7 @@ describe Metadata::MetadataService do
       allow(@metadata).to receive(:call).with(:deploy, any_args) do |name, message|
         tag = "<met:sessionId>test_session_id</met:sessionId>"
         expect(message[:xml]).to include_xml_tag(tag)
-        MockResponse.new
+        Forcer::MockResponse.new
       end
 
       @service.deploy
@@ -69,7 +69,7 @@ describe Metadata::MetadataService do
 
     it "queues deployment" do
       allow(@metadata).to receive(:call).with(:deploy, any_args) do
-        MockResponse.new
+        Forcer::MockResponse.new
       end
       @service.deploy
     end
