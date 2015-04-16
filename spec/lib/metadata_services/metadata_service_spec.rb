@@ -8,15 +8,6 @@ describe Metadata::MetadataService do
 
   include Savon::SpecHelper
 
-  # let(:args) {
-  #   {
-  #     host: "https://fake.salesforce.com",
-  #     username: "test_username",
-  #     password: "test_password",
-  #     security_token: "test_token"
-  #   }
-  # }
-
   # prepare savon mock for soap calls
   before(:all) do
     savon.mock!
@@ -51,27 +42,41 @@ describe Metadata::MetadataService do
     end
   end
 
-  describe "#deploy" do
+  context "services" do
     before(:each) do
       @metadata = double()
       @service.metadata_client = @metadata
     end
 
-    it "receives xml template" do
-      allow(@metadata).to receive(:call).with(:deploy, any_args) do |name, message|
-        tag = "<met:sessionId>test_session_id</met:sessionId>"
-        expect(message[:xml]).to include_xml_tag(tag)
-        Forcer::MockResponse.new
+    describe "#deploy" do
+      it "receives xml template" do
+        allow(@metadata).to receive(:call).with(:deploy, any_args) do |name, message|
+          expect(message[:xml]).to include_xml_tag("<met:sessionId>test_session_id</met:sessionId>")
+          Forcer::MockResponse.new(:deploy)
+        end
+
+        @service.deploy
       end
 
-      @service.deploy
+      it "queues deployment" do
+        allow(@metadata).to receive(:call).with(:deploy, any_args) do
+          Forcer::MockResponse.new(:deploy)
+        end
+        @service.deploy
+      end
     end
 
-    it "queues deployment" do
-      allow(@metadata).to receive(:call).with(:deploy, any_args) do
-        Forcer::MockResponse.new
+    describe "#list" do
+      it "prepares xml with types to list" do
+        allow(@metadata).to receive(:call).with(:list_metadata, any_args) do |name, message|
+          expect(message[:xml]).to include_xml_tag("<met:type>CustomObject</met:type>")
+          Forcer::MockResponse.new(:list_metadata)
+        end
+        @service.list
       end
-      @service.deploy
+
+      # it "lists metadata objects" do
+      # end
     end
-  end
-end
+  end # services context
+end # MetadataService test

@@ -16,9 +16,24 @@ module Metadata
       @metadata_client = get_client
     end
 
+    # lists metadata types like Classes, Pages
     def list
-      # todo reference file with all types
-      queries = "<met:type>CustomObject</met:type><met:folder>CustomObject</met:folder>"
+      default_list = ["CustomObject", "ApexClass", "ApexTrigger", "CustomLabels", "CustomTab", "EmailTemplate",
+        "Profile", "Queue", "StaticResource", "ApexComponent", "ApexPage"]
+
+      # todo check if args contains metadata to list
+
+      # assume components listed in terminal without commas as option to program
+      if @args[:types] != nil
+        types = @args[:types]
+      elsif
+        types = default_list
+      end
+
+      queries = ""
+      types.each do |type|
+        queries += "<met:type>#{type.to_s}</met:type><met:folder>#{type.to_s}</met:folder>"
+      end
 
       list_metadata_request = File.read(File.dirname(__FILE__) + "/list_metadata_request.xml")
       xml_param = list_metadata_request % [@current_session_id, queries, API_VERSION]
@@ -78,7 +93,7 @@ module Metadata
 
       message = {
         username: @args[:username],
-        password: @args[:password] + @args[:security_token]
+        password: "#{@args[:password]}#{@args[:security_token]}"
       }
 
       # === login
@@ -109,6 +124,16 @@ end # module Metadata
 
 # test area
 
-# metadata_service = Metadata::MetadataService.new(File.expand_path("../../../tmp/TestProject", __FILE__))
-# p metadata_service.list.body
+  # args = {
+  #   host: "https://test.salesforce.com",
+  #   username: "gaziz@eventbrite.com.comitydev",
+  #   password: "?kMMTR[d}X7`Fd}>@T.",
+  #   security_token: "fpX1t6k2We39Qtq42NKbnLWSQ"
+  # }
+  # metadata_service = Metadata::MetadataService.new(
+  #   File.expand_path("../../../tmp/TestProject", __FILE__),
+  #   args
+  # )
+  #
+  # p metadata_service.list.body
 # p metadata_service.deploy
