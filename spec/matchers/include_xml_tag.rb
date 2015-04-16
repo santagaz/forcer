@@ -23,6 +23,7 @@ RSpec::Matchers.define :include_xml_tag do |tag|
     return found
   end
 
+  # todo fix messages for custom tag
   # failure_message do |actual|
   #   "expected to find xml tag #{tag}"
   # end

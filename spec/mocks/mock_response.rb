@@ -2,9 +2,8 @@
 module Forcer
   class MockResponse
 
-    def initialize(mode = :deploy, options = {}) # by default deploy
+    def initialize(mode = :deploy) # by default deploy
       @mode = mode
-      @options = options
     end
 
     public
@@ -14,6 +13,8 @@ module Forcer
       elsif @mode == :list_metadata
         return body_list_metadata
       end
+
+      return {}
     end
 
     private
@@ -21,15 +22,16 @@ module Forcer
       return {
         :deploy_response => {
           :result => {
-            :deploy_result => "Queued"
+            :state=> "Queued",
+            :done=> "false"
           }
         }
       }
     end
 
     def body_list_metadata
-      return
-      {:list_metadata_response=>{
+      return {
+      :list_metadata_response=>{
         :result=>
           [{
             :created_by_id=>"test_user_id",

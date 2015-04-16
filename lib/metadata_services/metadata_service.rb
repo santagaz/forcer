@@ -35,7 +35,9 @@ module Metadata
 
       list_metadata_request = File.read(File.dirname(__FILE__) + "/list_metadata_request.xml")
       xml_param = list_metadata_request % [@current_session_id, queries, API_VERSION]
-      @metadata_client.call(:list_metadata, :xml => xml_param)
+      response = @metadata_client.call(:list_metadata, :xml => xml_param)
+
+      return response
     end
 
     def deploy
@@ -67,14 +69,15 @@ module Metadata
       deploy_request_xml = File.read(File.dirname(__FILE__) + "/deploy_request.xml");
       xml_param = deploy_request_xml % [debug_options_snippet, @current_session_id, blob_zip, deploy_options_snippet]
       response = @metadata_client.call(:deploy, :xml => xml_param)
-      if response.body[:deploy_response][:result] == "Queued"
-        p "DEPLOYMENT FAILED. CHECK DEPLOYMENT STATUS LOG IN SALESFORCE ORG."
-      else
+      if response.body[:deploy_response][:result][:state] == "Queued"
         p "DEPLOYMENT STARTED. CHECK DEPLOYMENT STATUS IN SALESFORCE ORG."
+      else
+        p "DEPLOYMENT FAILED. CHECK DEPLOYMENT STATUS LOG IN SALESFORCE ORG."
       end
     ensure
       FileUtils.rm_f zip_name
 
+      return response
     end
 
     private
@@ -134,4 +137,4 @@ end # module Metadata
   # )
   #
   # p metadata_service.list.body
-# p metadata_service.deploy
+# p metadata_service.deploy.body[:deploy_response][:result][:state]

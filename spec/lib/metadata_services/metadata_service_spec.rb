@@ -15,8 +15,8 @@ describe Metadata::MetadataService do
       host: "https://fake.salesforce.com",
       username: "test_username",
       password: "test_password",
-      security_token: "test_token"
-      # ,types: ["CustomObject"]
+      security_token: "test_token",
+      types: ["CustomObject"]
     }
     fixture_login_response = File.read("spec/fixtures/login_response.xml")
 
@@ -63,12 +63,12 @@ describe Metadata::MetadataService do
         allow(@metadata).to receive(:call).with(:deploy, any_args) do
           Forcer::MockResponse.new(:deploy)
         end
-        @service.deploy
+        expect(@service.deploy.body[:deploy_response][:result][:state]).to eq("Queued")
       end
     end
 
     describe "#list" do
-      it "prepares xml with types to list" do
+      it "prepares xml with types" do
         allow(@metadata).to receive(:call).with(:list_metadata, any_args) do |name, message|
           expect(message[:xml]).to include_xml_tag("<met:type>CustomObject</met:type>")
           Forcer::MockResponse.new(:list_metadata)
@@ -76,8 +76,11 @@ describe Metadata::MetadataService do
         @service.list
       end
 
-      # it "lists metadata objects" do
-      # end
+      it "lists metadata objects" do
+        # @args specified request only for CustomObject
+        allow(@metadata).to receive(:call).with(:list_metadata, any_args) { Forcer::MockResponse.new(:list_metadata) }
+        expect(@service.list.body[:list_metadata_response][:result].first[:full_name].to_s).to eq("TestSObject__c")
+      end
     end
   end # services context
 end # MetadataService test
