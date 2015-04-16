@@ -21,8 +21,6 @@ module Metadata
       default_list = ["CustomObject", "ApexClass", "ApexTrigger", "CustomLabels", "CustomTab", "EmailTemplate",
         "Profile", "Queue", "StaticResource", "ApexComponent", "ApexPage"]
 
-      # todo check if args contains metadata to list
-
       # assume components listed in terminal without commas as option to program
       if @args[:types] != nil
         types = @args[:types]
