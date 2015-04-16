@@ -1,5 +1,5 @@
 require "savon"
-require File.dirname(__FILE__) + "/project_directory_service.rb"
+require File.dirname(__FILE__) + "/sfdc_directory_service.rb"
 
 module Metadata
   class MetadataService
@@ -41,7 +41,7 @@ module Metadata
     end
 
     def deploy
-      dir_zip_service = ProjectDirectoryService.new(@target_dir_name)
+      dir_zip_service = SfdcDirectoryService.new(@target_dir_name)
       zip_name = dir_zip_service.write
       blob_zip = Base64.encode64(File.open(zip_name, "rb").read)
 

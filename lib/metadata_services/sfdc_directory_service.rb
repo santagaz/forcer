@@ -3,7 +3,7 @@ require "securerandom"
 
 module Metadata
 
-  class ProjectDirectoryService
+  class SfdcDirectoryService
 
     def initialize(input_dir_name = ".")
       @input_dir_name = input_dir_name
@@ -62,9 +62,9 @@ module Metadata
     def tempfile_name(extension = "zip")
       return "#{Dir.tmpdir}/#{random_filename(extension)}"
     end
-  end # class ProjectDirectoryService
+  end # class SfdcDirectoryService
 end # module Metadata
 
 # simple test
-# test_generator = Metadata::ProjectDirectoryService.new("/Users/gt/Desktop/TestProject")
+# test_generator = Metadata::SfdcDirectoryService.new("/Users/gt/Desktop/TestProject")
 # test_generator.write

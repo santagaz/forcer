@@ -2,7 +2,6 @@ require "spec_helper"
 require_relative "../../../lib/metadata_services/metadata_service"
 require "savon/mock/spec_helper"
 require "matchers/include_xml_tag"
-require "mocks/mock_response"
 
 describe Metadata::MetadataService do
 

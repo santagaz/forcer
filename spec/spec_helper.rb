@@ -2,7 +2,7 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'forcer'
 require "rspec"
 
-suppress standard output to console
+# suppress standard output to console
 RSpec.configure do |config|
   original_stderr = $stderr
   original_stdout = $stdout
