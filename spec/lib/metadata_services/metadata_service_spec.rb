@@ -16,6 +16,7 @@ describe Metadata::MetadataService do
       username: "test_username",
       password: "test_password",
       security_token: "test_token"
+      # ,types: ["CustomObject"]
     }
     fixture_login_response = File.read("spec/fixtures/login_response.xml")
 

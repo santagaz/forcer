@@ -13,13 +13,14 @@ RSpec::Matchers.define :include_xml_tag do |tag|
     # fixture tag is <met:sessionId>, need to register namespace "met"
     nodes = doc.xpath("//#{target_node_name}", "met" => "http://soap.sforce.com/2006/04/metadata")
     expect(nodes).not_to be_empty
+    found = false
     if value
       nodes.each do |node|
-        expect(node.content).to eq(value)
+        found = true if node.content.to_s == value.to_s
       end
     end
 
-    return true
+    return found
   end
 
   # failure_message do |actual|
