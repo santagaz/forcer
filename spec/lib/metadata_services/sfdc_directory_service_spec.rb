@@ -3,8 +3,15 @@ require_relative "../../../lib/metadata_services/sfdc_directory_service"
 
 describe 'Metadata::SfdcDirectoryService' do
 
-  it 'should do something' do
+  before(:all) do
+    @directory_service = Metadata::SfdcDirectoryService.new(File.expand_path("../../../fixtures/TestProject", __FILE__))
+  end
 
-    true.should == false
+  it "produce zip file" do
+    expect(@directory_service.write).to include(".zip")
+  end
+
+  it "checks if package.xml exists" do
+    expect(@directory_service.write).to output("package.xml FOUND")
   end
 end

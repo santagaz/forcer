@@ -1,7 +1,7 @@
 require "spec_helper"
 require_relative "../../../lib/metadata_services/metadata_service"
 require "savon/mock/spec_helper"
-require "matchers/include_xml_tag"
+require "support/matchers/include_xml_tag"
 
 describe Metadata::MetadataService do
 
@@ -96,6 +96,10 @@ describe Metadata::MetadataService do
           @mock_deploy_response
         end
         expect(@service.deploy.body[:deploy_response][:result][:state]).to eq("Queued")
+      end
+
+      it "deletes temp zip file" do
+        fail
       end
     end
 

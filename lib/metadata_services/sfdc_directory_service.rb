@@ -6,6 +6,7 @@ module Metadata
   class SfdcDirectoryService
 
     def initialize(input_dir_name = ".")
+      # todo check if input path is directory
       @input_dir_name = input_dir_name
       @output_file_name = tempfile_name("zip")
       @zip_io = Zip::File.open(@output_file_name, Zip::File::CREATE)
@@ -14,7 +15,7 @@ module Metadata
     # Create zip file with contents of force.com project
     # Return absolute path to the file
     def write
-      # todo check if package.xml exists
+      verify_package_xml
       entries = dir_content(@input_dir_name)
       write_entries(entries, "")
     ensure
@@ -61,6 +62,16 @@ module Metadata
     # Adds extension to filename. Default is "zip".
     def tempfile_name(extension = "zip")
       return "#{Dir.tmpdir}/#{random_filename(extension)}"
+    end
+
+    # check if exists or create if doesn't
+    def verify_package_xml
+      path = File.join(File.expand_path(@input_dir_name, __FILE__), "package.xml")
+      if File.exists?(path)
+        p "package.xml FOUND"
+      else
+        p "package.xml MISSING"
+      end
     end
   end # class SfdcDirectoryService
 end # module Metadata
