@@ -68,9 +68,10 @@ module Metadata
     def verify_package_xml
       path = File.join(File.expand_path(@input_dir_name, __FILE__), "package.xml")
       if File.exists?(path)
-        p "package.xml FOUND"
+        return "package.xml FOUND"
       else
-        p "package.xml MISSING"
+        # todo logic to create package.xml. use default file
+        return false
       end
     end
   end # class SfdcDirectoryService
