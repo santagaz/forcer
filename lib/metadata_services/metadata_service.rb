@@ -5,7 +5,7 @@ module Metadata
   class MetadataService
 
     API_VERSION = 33.0 # todo move to constants file
-    attr_accessor :metadata_client, :current_session_id
+    attr_accessor :metadata_client, :current_session_id, :zip_name
 
     def initialize(target_dir_name = File.expand_path("./", __FILE__), args = {})
       # todo read credentials from yaml
@@ -42,8 +42,8 @@ module Metadata
 
     def deploy
       dir_zip_service = SfdcDirectoryService.new(@target_dir_name)
-      zip_name = dir_zip_service.write
-      blob_zip = Base64.encode64(File.open(zip_name, "rb").read)
+      @zip_name = dir_zip_service.write
+      blob_zip = Base64.encode64(File.open(@zip_name, "rb").read)
 
       # todo read options from console arguments
       options = {
@@ -75,7 +75,7 @@ module Metadata
         p "DEPLOYMENT FAILED. CHECK DEPLOYMENT STATUS LOG IN SALESFORCE ORG."
       end
     ensure
-      FileUtils.rm_f zip_name
+      FileUtils.rm_f @zip_name
 
       return response
     end

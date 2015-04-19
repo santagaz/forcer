@@ -79,6 +79,12 @@ describe Metadata::MetadataService do
           }
         }
       end
+
+      allow(@metadata).to receive(:call).with(:deploy, any_args).and_return(@mock_deploy_response)
+    end
+
+    after(:all) do
+      FileUtils.rm_f(@service.zip_name) if File.exists?(@service.zip_name)
     end
 
     describe "#deploy" do
@@ -87,18 +93,16 @@ describe Metadata::MetadataService do
           expect(message[:xml]).to include_xml_tag("<met:sessionId>test_session_id</met:sessionId>")
           @mock_deploy_response
         end
-
         @service.deploy
       end
 
       it "queues deployment" do
-        allow(@metadata).to receive(:call).with(:deploy, any_args).and_return(@mock_deploy_response)
         expect(@service.deploy.body[:deploy_response][:result][:state]).to eq("Queued")
       end
 
-      # it "deletes temp zip file" do
-      #   fail
-      # end
+      it "deletes temp zip file" do
+        expect(File.exists?(@service.zip_name)).to eq(false)
+      end
     end
 
     describe "#list" do
