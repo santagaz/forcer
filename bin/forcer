@@ -10,5 +10,6 @@ require "forcer"
 # require "pry"
 # Pry.start
 
-require "irb"
-IRB.start
+p "here must be program"
+#require "irb"
+#IRB.start
