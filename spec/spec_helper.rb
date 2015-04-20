@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'forcer'
+require 'forcer_main'
 require "rspec"
 
 # suppress standard output to console
