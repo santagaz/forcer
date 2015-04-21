@@ -12,4 +12,4 @@ require "forcer_main"
 
 #require "irb"
 #IRB.start
-Forcer::ForcerMain.execute
+Forcer::ForcerMain.start

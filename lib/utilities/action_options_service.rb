@@ -1,6 +1,6 @@
 
 module Forcer
-  class ConsoleOptionsService
+  class ActionOptionsService
     def self.parse(options = {})
       if options[:deploy]
         p "call deploy"
