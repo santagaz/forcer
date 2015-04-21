@@ -21,7 +21,7 @@ module Forcer
       configuration[dest].each do |key, value|
         options.store(key.to_sym, value.to_s)
       end
-      options[:dest_url] = "https://#{options[:dest_url]}" unless options[:dest_url].include?("http")
+      options[:host] = "https://#{options[:host]}" unless options[:host].include?("http")
 
       return options
     end

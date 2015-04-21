@@ -21,7 +21,7 @@ describe 'Forcer::ActionOptionsService' do
     describe "#load_config_file" do
 
       it "loads destination url from yaml" do
-        expect(@options[:dest_url]).to eq("https://fake.salesforce.com")
+        expect(@options[:host]).to eq("https://fake.salesforce.com")
       end
 
       it "loads username from yaml" do
@@ -42,7 +42,7 @@ describe 'Forcer::ActionOptionsService' do
       end
 
       it "skips destination url" do
-        expect(@options[:dest_url]).to be_nil
+        expect(@options[:host]).to be_nil
       end
 
       it "skips security token" do
@@ -64,7 +64,7 @@ describe 'Forcer::ActionOptionsService' do
     end
 
     it "skips destination url" do
-      expect(@options[:dest_url]).to be_nil
+      expect(@options[:host]).to be_nil
     end
 
     it "skips security token" do
