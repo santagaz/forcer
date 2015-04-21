@@ -3,14 +3,17 @@ require "yaml"
 module Forcer
   class ActionOptionsService
 
-    def self.load_config_file(options = {})
+    # attempts to read salesforce org information from yaml
+    def self.load_config_file(old_options = {})
+      options = old_options.clone
+
       config_file_path = File.join(Dir.pwd, "/configuration.yml")
-      return unless File.exists?(config_file_path)
+      return options unless File.exists?(config_file_path)
 
       dest = options[:dest]
       configuration = YAML.load_file(config_file_path).to_hash
 
-      return if configuration[dest].nil?
+      return options if configuration[dest].nil?
 
       configuration[dest].each do |key, value|
         options.store(key.to_sym, value.to_s)

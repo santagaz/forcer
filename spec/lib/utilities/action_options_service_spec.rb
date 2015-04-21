@@ -15,7 +15,7 @@ describe 'Forcer::ActionOptionsService' do
   context "org information found" do
     before(:all) do
       @options = {dest: "fake_sandbox"}
-      @service = Forcer::ActionOptionsService.load_config_file(@options)
+      @options = Forcer::ActionOptionsService.load_config_file(@options)
     end
 
     describe "#load_config_file" do
@@ -38,7 +38,7 @@ describe 'Forcer::ActionOptionsService' do
     describe "#initialize" do
       before(:all) do
         @options = {dest: "not_exising_org"}
-        @service = Forcer::ActionOptionsService.load_config_file(@options)
+        @options = Forcer::ActionOptionsService.load_config_file(@options)
       end
 
       it "skips destination url" do
@@ -60,7 +60,7 @@ describe 'Forcer::ActionOptionsService' do
       @config_name = File.join(Dir.pwd, "configuration.yml")
       File.rename(@config_name, @config_name + "dummy_string")
       @options = {dest: "fake_sandbox"}
-      @service = Forcer::ActionOptionsService.load_config_file(@options)
+      @options = Forcer::ActionOptionsService.load_config_file(@options)
     end
 
     it "skips destination url" do
