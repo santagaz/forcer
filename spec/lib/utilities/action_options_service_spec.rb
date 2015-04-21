@@ -6,26 +6,53 @@ describe 'Forcer::ActionOptionsService' do
   before(:all) do
     @init_directory = Dir.pwd
     Dir.chdir(File.expand_path("../../../fixtures/TestProject", __FILE__)) # search configuration.yml in current directory
-    @options = {dest: "fake_sandbox"}
-    @service = Forcer::ActionOptionsService.new(@options)
   end
 
   after(:all) do
     Dir.chdir(@init_directory)
   end
 
-  describe "#initialize" do
-
-    it "loads destination url from yaml" do
-      expect(@options[:dest_url]).to eq("https://fake.salesforce.com")
+  context "org information found" do
+    before(:all) do
+      @options = {dest: "fake_sandbox"}
+      @service = Forcer::ActionOptionsService.new(@options)
     end
 
-    it "loads username from yaml" do
-      expect(@options[:username]).to eq("test_username")
-    end
+    describe "#initialize" do
 
-    it "loads security token from yaml" do
-      expect(@options[:security_token]).to eq("test_token")
+      it "loads destination url from yaml" do
+        expect(@options[:dest_url]).to eq("https://fake.salesforce.com")
+      end
+
+      it "loads username from yaml" do
+        expect(@options[:username]).to eq("test_username")
+      end
+
+      it "loads security token from yaml" do
+        expect(@options[:security_token]).to eq("test_token")
+      end
     end
-  end
-end
+  end # context "org information found"
+
+  context "org information not found" do
+    describe "#initialize" do
+      before(:all) do
+        @options = {dest: "not_exising_org"}
+        @service = Forcer::ActionOptionsService.new(@options)
+      end
+
+      it "skips destination url" do
+        expect(@options[:dest_url]).to be_nil
+      end
+
+      it "skips security token" do
+        expect(@options[:security_token]).to be_nil
+      end
+
+      it "skips username" do
+        expect(@options[:username]).to be_nil
+      end
+    end
+  end # context "org not found in file"
+
+end # unit test
