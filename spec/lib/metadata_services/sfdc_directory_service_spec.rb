@@ -6,7 +6,7 @@ describe 'Metadata::SfdcDirectoryService' do
   before(:all) do
     @path = File.expand_path("../../../fixtures/TestProject", __FILE__)
     @directory_service = Metadata::SfdcDirectoryService.new(@path)
-    @path_package_xml = File.join(@path, "package.xml")
+    @path_package_xml = File.join(@path, "/src/package.xml")
   end
 
   it "produce zip file" do
