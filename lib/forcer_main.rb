@@ -11,7 +11,7 @@ module Forcer
     desc "deploy --dest destination_org_name", "Deploys project on local machine to destination org. Destination org" +
        " name should be specified in configuration.yml. Forcer asks for any information missing from configuration.yml"
     def deploy
-      # ConsoleOptionsService.parse(options)
+      ConsoleOptionsService.parse(options)
     end
   end
 end
