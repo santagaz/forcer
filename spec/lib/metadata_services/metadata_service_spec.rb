@@ -1,7 +1,7 @@
-require "spec_helper"
+require_relative "../../spec_helper"
 require_relative "../../../lib/metadata_services/metadata_service"
 require "savon/mock/spec_helper"
-require "support/matchers/include_xml_tag"
+require_relative "../../support/matchers/include_xml_tag"
 
 describe Metadata::MetadataService do
 
@@ -17,7 +17,7 @@ describe Metadata::MetadataService do
       security_token: "test_token",
       types: ["CustomObject"]
     }
-    fixture_login_response = File.read("spec/fixtures/login_response.xml")
+    fixture_login_response = File.read(File.expand_path("../../../fixtures/login_response.xml", __FILE__))
 
     login_info = {
       username: args[:username],

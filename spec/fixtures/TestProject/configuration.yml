@@ -1,5 +1,5 @@
-:fake_sandbox:
-  :dest_url: fake.salesforce.com
-  :security_token: test_token
-  :username: test_username
-  :password:
+fake_sandbox:
+  dest_url: fake.salesforce.com
+  username: test_username
+  password:
+  security_token: test_token

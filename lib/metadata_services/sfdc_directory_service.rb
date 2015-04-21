@@ -7,7 +7,7 @@ module Metadata
 
     def initialize(input_dir_name = ".")
       # todo check if input path is directory
-      @input_dir_name = input_dir_name + "/src"
+      @input_dir_name = input_dir_name + "/project/src"
       @output_file_name = tempfile_name("zip")
       @zip_io = Zip::File.open(@output_file_name, Zip::File::CREATE)
     end

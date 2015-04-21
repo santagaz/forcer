@@ -5,26 +5,26 @@ describe 'Forcer::ActionOptionsService' do
 
   before(:all) do
     @init_directory = Dir.pwd
-    Dir.chdir("fixtures/TestProject")
-    @service = Forcer::ActionOptionsService.new
+    Dir.chdir(File.expand_path("../../../fixtures/TestProject", __FILE__)) # search configuration.yml in current directory
+    @options = {dest: "fake_sandbox"}
+    @service = Forcer::ActionOptionsService.new(@options)
   end
 
   after(:all) do
     Dir.chdir(@init_directory)
   end
 
-  # username: "test_username",
-  # password: "test_password",
-  # security_token: "test_token",
-  describe "#prepare_options" do
+  describe "#initialize" do
 
-    before(:each) do
-      @service.prepare_options(@options)
+    it "loads destination url from yaml" do
+      expect(@options[:dest_url]).to eq("https://fake.salesforce.com")
     end
 
-    it "loads options from config.yml" do
+    it "loads username from yaml" do
       expect(@options[:username]).to eq("test_username")
-      expect(@options[:password]).to eq("test_password")
+    end
+
+    it "loads security token from yaml" do
       expect(@options[:security_token]).to eq("test_token")
     end
   end
