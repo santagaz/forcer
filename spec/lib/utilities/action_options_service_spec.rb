@@ -55,4 +55,28 @@ describe 'Forcer::ActionOptionsService' do
     end
   end # context "org not found in file"
 
+  context "yaml not found" do
+    before(:all) do
+      @config_name = File.join(Dir.pwd, "configuration.yml")
+      File.rename(@config_name, @config_name + "dummy_string")
+      @options = {dest: "fake_sandbox"}
+      @service = Forcer::ActionOptionsService.new(@options)
+    end
+
+    it "skips destination url" do
+      expect(@options[:dest_url]).to be_nil
+    end
+
+    it "skips security token" do
+      expect(@options[:security_token]).to be_nil
+    end
+
+    it "skips username" do
+      expect(@options[:username]).to be_nil
+    end
+
+    after(:all) do
+      File.rename(@config_name + "dummy_string", @config_name)
+    end
+  end
 end # unit test

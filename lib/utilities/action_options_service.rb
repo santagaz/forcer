@@ -9,8 +9,11 @@ module Forcer
     end
 
     def load_config_file
+      config_file_path = File.join(Dir.pwd, "/configuration.yml")
+      return unless File.exists?(config_file_path)
+
       dest = @options[:dest]
-      configuration = YAML.load_file(File.join(Dir.pwd, "/configuration.yml")).to_hash
+      configuration = YAML.load_file(config_file_path).to_hash
 
       return if configuration[dest].nil?
 
