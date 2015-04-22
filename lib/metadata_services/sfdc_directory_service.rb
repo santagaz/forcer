@@ -1,14 +1,19 @@
 require "zip"
 require "securerandom"
+require "yaml"
 
 module Metadata
 
   class SfdcDirectoryService
 
-    def initialize(input_dir_name = ".")
+    public
+
+    def initialize(input_dir_name = Dir.pwd, exclude_file_name = "")
       # todo check if input path is directory
       @input_dir_name = input_dir_name + "/project/src"
       @output_file_name = tempfile_name("zip")
+      @files_to_exclude = {}
+      prepare_files_to_exclude(exclude_file_name)
     end
 
     # Create zip file with contents of force.com project
@@ -28,6 +33,17 @@ module Metadata
 
     private
 
+    def prepare_files_to_exclude(exclude_file_name)
+
+      if exclude_file_name.empty? || File.exists?(exclude_file_name)
+        exclude_file_name = File.expand_path("../exclude_components.yml", __FILE__)
+      end
+      @files_to_exclude = YAML.load_file(exclude_file_name)
+      @files_to_exclude.each do |f|
+        f.to_s.downcase!
+      end
+    end
+
     def write_entries(entries, path)
       entries.each do |entry|
         # need relative local file path to use in new zip file too
@@ -40,7 +56,7 @@ module Metadata
           sub_dir = dir_content(disk_file_path)
           write_entries(sub_dir, zip_file_path)
         else
-          @zip_io.add(zip_file_path, disk_file_path)
+          @zip_io.add(zip_file_path, disk_file_path) unless @files_to_exclude.include?(zip_file_path.downcase)
         end
       end
     end
