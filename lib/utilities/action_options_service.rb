@@ -19,7 +19,7 @@ module Forcer
       return options if configuration[dest].nil?
 
       configuration[dest].each do |key, value|
-        options.store(key.to_sym, value.to_s)
+        options.store(key.to_sym, value.to_s)  unless value.to_s.empty?
       end
       options[:host] = "https://#{options[:host]}" unless options[:host].include?("http")
 

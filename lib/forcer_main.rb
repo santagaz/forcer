@@ -18,12 +18,13 @@ module Forcer
     end
 
 
+    # these section includes non-console methods to be used internally
     no_commands do
       def verify_options(old_options = {})
         new_options = ActionOptionsService.load_config_file(old_options)
         new_options[:host] ||=  "https://" + ask("Enter org url (test.salesforce.org or login.salesforce.org): ")
         new_options[:username] ||= ask("Enter username: ")
-        new_options[:password] ||= ask("Enter password: ")
+        new_options[:password] ||= ask("Enter password: ", :echo => false)
         new_options[:security_token] ||= ask("Enter security token: ")
         new_options[:source] ||= Dir.pwd
         return new_options
