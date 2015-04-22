@@ -33,8 +33,8 @@ module Metadata
         queries += "<met:type>#{type.to_s}</met:type><met:folder>#{type.to_s}</met:folder>"
       end
 
-      list_metadata_request = File.read(File.dirname(__FILE__) + "/list_metadata_request.xml")
-      xml_param = list_metadata_request % [@current_session_id, queries, API_VERSION]
+      list_metadata_template = File.read(File.dirname(__FILE__) + "/list_metadata_request.xml")
+      xml_param = list_metadata_template % [@current_session_id, queries, API_VERSION]
       response = @metadata_client.call(:list_metadata, :xml => xml_param)
 
       return response

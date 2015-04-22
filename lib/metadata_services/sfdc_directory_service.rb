@@ -9,17 +9,19 @@ module Metadata
       # todo check if input path is directory
       @input_dir_name = input_dir_name + "/project/src"
       @output_file_name = tempfile_name("zip")
-      @zip_io = Zip::File.open(@output_file_name, Zip::File::CREATE)
     end
 
     # Create zip file with contents of force.com project
     # Return absolute path to the file
     def write
-      verify_package_xml
-      entries = dir_content(@input_dir_name)
-      write_entries(entries, "")
-    ensure
-      @zip_io.close
+      begin
+        @zip_io = Zip::File.open(@output_file_name, Zip::File::CREATE)
+        verify_package_xml
+        entries = dir_content(@input_dir_name)
+        write_entries(entries, "")
+      ensure
+        @zip_io.close
+      end
 
       return @output_file_name
     end
