@@ -1,6 +1,25 @@
 require "savon"
 require File.dirname(__FILE__) + "/sfdc_directory_service.rb"
 
+=begin
+client.operations => [
+  :cancel_deploy,
+  :check_deploy_status,
+  :check_retrieve_status,
+  :create_metadata,
+  :delete_metadata,
+  :deploy,
+  :deploy_recent_validation,
+  :describe_metadata,
+  :describe_value_type,
+  :list_metadata,
+  :read_metadata,
+  :rename_metadata,
+  :retrieve,
+  :update_metadata,
+  :upsert_metadata
+]
+=end
 module Metadata
   class MetadataService
 
