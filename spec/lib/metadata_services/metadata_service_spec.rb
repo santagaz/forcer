@@ -15,7 +15,8 @@ describe Metadata::MetadataService do
       username: "test_username",
       password: "test_password",
       security_token: "test_token",
-      types: ["CustomObject"]
+      types: ["CustomObject"],
+      unit_test_running: true
     }
     fixture_login_response = File.read(File.expand_path("../../../fixtures/login_response.xml", __FILE__))
 

@@ -60,48 +60,77 @@ module Metadata
     end
 
     def deploy
-      dir_zip_service = SfdcDirectoryService.new(@target_dir_name)
-      @zip_name = dir_zip_service.write
-      blob_zip = Base64.encode64(File.open(@zip_name, "rb").read)
+      begin
+        dir_zip_service = SfdcDirectoryService.new(@target_dir_name)
+        @zip_name = dir_zip_service.write
+        blob_zip = Base64.encode64(File.open(@zip_name, "rb").read)
 
-      # todo read options from console arguments
-      options = {
-        singlePackage: true,
-        rollbackOnError: true,
-        checkOnly: true,
-        allowMissingFiles: false,
-        runAllTests: false,
-        ignoreWarnings: false
-      }
+        # todo read options from console arguments
+        options = {
+          singlePackage: true,
+          rollbackOnError: true,
+          checkOnly: true,
+          allowMissingFiles: false,
+          runAllTests: false,
+          ignoreWarnings: false
+        }
 
-      # prepare xml for deployment
-      deploy_options_snippet = ""
-      options.each do |k, v|
-        key = k.to_s
-        val = v.to_s
-        # todo take care of array options
-        deploy_options_snippet += "<met:#{key}>#{val}</met:#{key}>"
-      end
+        # prepare xml for deployment
+        deploy_options_snippet = ""
+        options.each do |k, v|
+          key = k.to_s
+          val = v.to_s
+          # todo take care of array options if any
+          deploy_options_snippet += "<met:#{key}>#{val}</met:#{key}>"
+        end
 
-      debug_options_snippet = "" #by default no debug options
+        debug_options_snippet = "" #by default no debug options
 
-      deploy_request_xml = File.read(File.dirname(__FILE__) + "/deploy_request.xml");
-      xml_param = deploy_request_xml % [debug_options_snippet, @current_session_id, blob_zip, deploy_options_snippet]
-      response = @metadata_client.call(:deploy, :xml => xml_param)
-      if response.body[:deploy_response][:result][:state] == "Queued"
-        p "DEPLOYMENT STARTED. CHECK DEPLOYMENT STATUS IN SALESFORCE ORG."
-      else
-        p "DEPLOYMENT FAILED. CHECK DEPLOYMENT STATUS LOG IN SALESFORCE ORG."
-      end
+        deploy_request_xml = File.read(File.dirname(__FILE__) + "/deploy_request.xml");
+        xml_param = deploy_request_xml % [debug_options_snippet, @current_session_id, blob_zip, deploy_options_snippet]
+        response = @metadata_client.call(:deploy, :xml => xml_param)
+        # todo catch exceptions
+
+        if response.body[:deploy_response][:result][:state] == "Queued"
+          p "DEPLOYMENT STARTED. YOU CAN ALSO CHECK DEPLOYMENT STATUS IN SALESFORCE ORG."
+
+          run_status_check(
+              response.body[:deploy_response][:result][:id],
+              lambda { |header, body| @metadata_client.call(:check_deploy_status, soap_header: header) { message(body) }}
+          ) unless @args[:unit_test_running]
+
+        else
+          p "DEPLOYMENT FAILED. CHECK DEPLOYMENT STATUS LOG IN SALESFORCE ORG."
+        end
     ensure
       FileUtils.rm_f @zip_name
+    end
 
       return response
     end
 
     private
-    # request salesforce for status of process
-    def get_status(sfdc_process_id)
+    # run thread to check process status
+    def run_status_check(async_id, lambda_metadata)
+      header = {
+          "tns:SessionHeader" => {
+              "tns:sessionId" => @current_session_id
+          }
+      }
+      body = {
+          asyncProcessId: async_id
+      }
+      sleep(5)
+      p "REQUESTING STATUS"
+      response = lambda_metadata.call(header, body)
+      p "===== check status => #{response.body}"
+      # Thread.new do
+      #   begin
+      #     response = lambda.call(options)
+      #   rescue Exception
+      #
+      #   end
+      # end
     end
 
     # login to salesforce and obtain session information
@@ -123,7 +152,7 @@ module Metadata
 
       # === login
       response = enterprise_client.call(:login, message: message)
-      # p "login response : #{response}"
+      # todo catch exceptions
       @current_session_id = response.body[:login_response][:result][:session_id]
       @metadata_server_url = response.body[:login_response][:result][:metadata_server_url]
     end
