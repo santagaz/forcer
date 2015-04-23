@@ -1,6 +1,6 @@
 require "thor"
 require_relative "./forcer/version"
-require_relative "utilities/action_options_service"
+require_relative "./utilities/action_options_service"
 require_relative "./metadata_services/metadata_service"
 
 module Forcer

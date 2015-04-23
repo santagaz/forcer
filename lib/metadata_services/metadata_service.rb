@@ -1,5 +1,6 @@
 require "savon"
-require File.dirname(__FILE__) + "/sfdc_directory_service.rb"
+require_relative "../metadata_services/sfdc_directory_service"
+require_relative "../utilities/status_print_service"
 
 =begin
 client.operations => [
@@ -26,12 +27,9 @@ module Metadata
     API_VERSION = 33.0 # todo move to constants file
     attr_accessor :metadata_client, :current_session_id, :zip_name
 
-    def initialize(target_dir_name = File.expand_path("./", __FILE__), args = {})
-      # todo read credentials from yaml
-      # todo check if target_dir_name exists
-      # todo read endpoint_url from yaml
+    def initialize(target_dir_name, args = {})
+      @target_dir_name = Dir.exists?(target_dir_name) ? target_dir_name : Dir.pwd
       @args = args
-      @target_dir_name = target_dir_name
       @metadata_client = get_client
     end
 
@@ -94,8 +92,8 @@ module Metadata
         if response.body[:deploy_response][:result][:state] == "Queued"
           p "DEPLOYMENT STARTED. YOU CAN ALSO CHECK DEPLOYMENT STATUS IN SALESFORCE ORG."
 
-          run_status_check(
-              response.body[:deploy_response][:result][:id],
+          Forcer::StatusPrintService.new().run_status_check(
+              {id: response.body[:deploy_response][:result][:id], session_id: @current_session_id},
               lambda { |header, body| @metadata_client.call(:check_deploy_status, soap_header: header) { message(body) }}
           ) unless @args[:unit_test_running]
 
@@ -110,29 +108,6 @@ module Metadata
     end
 
     private
-    # run thread to check process status
-    def run_status_check(async_id, lambda_metadata)
-      header = {
-          "tns:SessionHeader" => {
-              "tns:sessionId" => @current_session_id
-          }
-      }
-      body = {
-          asyncProcessId: async_id
-      }
-      sleep(5)
-      p "REQUESTING STATUS"
-      response = lambda_metadata.call(header, body)
-      p "===== check status => #{response.body}"
-      # Thread.new do
-      #   begin
-      #     response = lambda.call(options)
-      #   rescue Exception
-      #
-      #   end
-      # end
-    end
-
     # login to salesforce and obtain session information
     def login
       endpoint_url = @args[:host]
