@@ -100,6 +100,11 @@ module Metadata
     end
 
     private
+    # request salesforce for status of process
+    def get_status(sfdc_process_id)
+    end
+
+    # login to salesforce and obtain session information
     def login
       endpoint_url = @args[:host]
       options = {
@@ -123,6 +128,7 @@ module Metadata
       @metadata_server_url = response.body[:login_response][:result][:metadata_server_url]
     end
 
+    # using session information create metadata client
     def get_client
       login
       options = {
