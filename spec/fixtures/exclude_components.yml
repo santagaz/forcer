@@ -1,1 +1,3 @@
-- objects/Idea.object
+- classes/FileToExclude.cls
+- classes/FileToExclude.cls-meta.xml
+- workflows

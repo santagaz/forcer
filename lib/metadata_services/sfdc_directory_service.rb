@@ -35,7 +35,7 @@ module Metadata
 
     def prepare_files_to_exclude(exclude_file_name)
 
-      if exclude_file_name.empty? || File.exists?(exclude_file_name)
+      if exclude_file_name.empty? || not(File.exists?(exclude_file_name))
         exclude_file_name = File.expand_path("../exclude_components.yml", __FILE__)
       end
 
@@ -49,15 +49,17 @@ module Metadata
       entries.each do |entry|
         # need relative local file path to use in new zip file too
         zip_file_path = (path == "" ? entry : File.join(path, entry)) # maybe without if/else
+        next if @files_to_exclude.include?(zip_file_path.downcase) # avoid if directory/file excluded
 
         # need full file path to use in copy/paste
         disk_file_path = File.join(@input_dir_name, zip_file_path)
+
         if File.directory?(disk_file_path)
           @zip_io.mkdir(zip_file_path)
           sub_dir = dir_content(disk_file_path)
           write_entries(sub_dir, zip_file_path)
         else
-          @zip_io.add(zip_file_path, disk_file_path) unless @files_to_exclude.include?(zip_file_path.downcase)
+          @zip_io.add(zip_file_path, disk_file_path)
         end
       end
     end

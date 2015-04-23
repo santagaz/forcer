@@ -33,6 +33,9 @@ describe 'Metadata::SfdcDirectoryService' do
       expect(@zip_file.find_entry("classes/FileToExclude.cls-meta.xml")).to be_nil
     end
 
+    it "excluded directories using exclude.yml" do
+      expect(@zip_file.find_entry("workflows/")).to be_nil
+    end
   end
 
   describe "zip file" do
@@ -40,6 +43,18 @@ describe 'Metadata::SfdcDirectoryService' do
       expect(@zip_file.find_entry("classes/DummyClass.cls")).to_not be_nil
       expect(@zip_file.find_entry("package.xml")).to_not be_nil
       expect(@zip_file.find_entry("NOT_EXISTING_FILE")).to be_nil
+    end
+
+    it "contains directories from source" do
+      expect(@zip_file.find_entry("objects/")).to_not be_nil
+    end
+  end
+
+  private
+
+  def print_zip_content(zip_filename)
+    Zip::File.foreach(zip_filename) do |entry|
+      pp "==== #{entry}"
     end
   end
 end
