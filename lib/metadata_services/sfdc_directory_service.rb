@@ -38,9 +38,10 @@ module Metadata
       if exclude_file_name.empty? || File.exists?(exclude_file_name)
         exclude_file_name = File.expand_path("../exclude_components.yml", __FILE__)
       end
-      @files_to_exclude = YAML.load_file(exclude_file_name)
-      @files_to_exclude.each do |f|
-        f.to_s.downcase!
+
+      @files_to_exclude = Set.new()
+      YAML.load_file(exclude_file_name).each do |name|
+        @files_to_exclude.add(name.to_s.downcase)
       end
     end
 
