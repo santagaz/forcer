@@ -1,6 +1,6 @@
 require "thor"
 require_relative "./forcer/version"
-require_relative "utilities/action_options_service"
+require_relative "./utilities/action_options_service"
 require_relative "./metadata_services/metadata_service"
 
 module Forcer
@@ -27,6 +27,7 @@ module Forcer
         new_options[:password] ||= ask("Enter password: ", :echo => false)
         new_options[:security_token] ||= ask("Enter security token: ")
         new_options[:source] ||= Dir.pwd
+        new_options[:unit_test_running] = false
         return new_options
       end
     end
