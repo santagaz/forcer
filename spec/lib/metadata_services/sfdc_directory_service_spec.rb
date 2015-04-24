@@ -1,6 +1,7 @@
 require 'rspec'
 require_relative "../../../lib/metadata_services/sfdc_directory_service"
 require "zip"
+require 'nokogiri'
 
 describe 'Metadata::SfdcDirectoryService' do
 
@@ -50,6 +51,13 @@ describe 'Metadata::SfdcDirectoryService' do
     end
   end
 
+  describe "xml filter" do
+    it "extracts xml snippet from file" do
+      doc = Nokogiri::XML(@zip_file.read('profiles/Admin.profile'))
+      expect(doc.search("*//layoutAssignments/layout[starts-with('Social')]")).to be_empty
+    end
+  end
+
   private
 
   def print_zip_content(zip_filename)
@@ -58,3 +66,11 @@ describe 'Metadata::SfdcDirectoryService' do
     end
   end
 end
+
+
+# doc = Nokogiri::XML(File.open("Admin.profile"))
+#
+# doc.search("*//layoutAssignments/layout")
+#
+# doc.search("*//layoutAssignments/layout[text()='SocialPersona-Social Persona Layout']")
+# doc.search("*//layoutAssignments/layout[starts-with('Social')]")
