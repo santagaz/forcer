@@ -39,7 +39,7 @@ module Forcer
             sleep(4)
             retry
           else
-            "EXCEEDED MAX_NUMBER_RETRIES (#{MAX_NUMBER_RETRIES}). EXITING NOW."
+            p "EXCEEDED MAX_NUMBER_RETRIES (#{MAX_NUMBER_RETRIES}). EXITING NOW."
             raise ex
           end
         end while(number_retries < MAX_NUMBER_RETRIES)
