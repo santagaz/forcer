@@ -1,6 +1,7 @@
 require "zip"
 require "securerandom"
 require "yaml"
+require "nokogiri"
 
 module Metadata
 
@@ -8,24 +9,35 @@ module Metadata
 
     public
 
-    def initialize(input_dir_name = Dir.pwd, exclude_file_name = "")
+    def initialize(input_dir_name = Dir.pwd, exclude_components_filename = "", exclude_xml_nodes_filename = "")
       # todo check if input path is directory
-      @input_dir_name = input_dir_name + "/project/src"
+      # @input_dir_name = input_dir_name + "/project/src"
+      @input_dir_name = input_dir_name
       @output_file_name = tempfile_name("zip")
-      @files_to_exclude = {}
-      prepare_files_to_exclude(exclude_file_name)
+      @files_to_exclude = Set.new()
+      @snippets_to_exclude = {}
+
+      prepare_files_to_exclude(exclude_components_filename)
+      prepare_xml_nodes_to_exclude(exclude_xml_nodes_filename)
     end
 
+    # copy files from original directory to be xml_filtered later
     # Create zip file with contents of force.com project
     # Return absolute path to the file
     def write
       begin
         @zip_io = Zip::File.open(@output_file_name, Zip::File::CREATE)
         verify_package_xml
+
+        tmpdir = Dir.mktmpdir
+        FileUtils.cp_r(@input_dir_name + "/project/src", tmpdir)
+        @input_dir_name = tmpdir.to_s + "/src"
+
         entries = dir_content(@input_dir_name)
         write_entries(entries, "")
       ensure
-        @zip_io.close
+        @zip_io.close # close before deleting tmpdir, or NOT_FOUND exception
+        FileUtils.remove_entry(tmpdir)
       end
 
       return @output_file_name
@@ -33,17 +45,37 @@ module Metadata
 
     private
 
-    def prepare_files_to_exclude(exclude_file_name)
-
-      if exclude_file_name.empty? || not(File.exists?(exclude_file_name))
-        exclude_file_name = File.expand_path("../exclude_components.yml", __FILE__)
+    def prepare_files_to_exclude(exclude_filename)
+      if exclude_filename.empty? || not(File.exists?(exclude_filename))
+        exclude_filename = File.expand_path("../exclude_components.yml", __FILE__)
       end
 
       @files_to_exclude = Set.new()
-      YAML.load_file(exclude_file_name).each do |name|
+      YAML.load_file(exclude_filename).each do |name|
         @files_to_exclude.add(name.to_s.downcase)
       end
     end
+
+    def prepare_xml_nodes_to_exclude(exclude_filename)
+      if exclude_filename.empty? || not(File.exists?(exclude_filename))
+      exclude_filename = File.expand_path("../exclude_xml_nodes.yml", __FILE__)
+      end
+
+      @snippets_to_exclude = YAML.load_file(exclude_filename)
+      # YAML.load_file(exclude_filename).each do |key, value|
+      #   # @snippets_to_exclude[key] << value
+      #   pp "=== #{key} => #{value}"
+      # end
+      # pp "====== snippets => #{@snippets_to_exclude} ==== #{@snippets_to_exclude.class}"
+    end
+
+    # def filter_xml(filename)
+    #   @snippets_to_exclude.each do |suffix|
+    #     next unless filename.end_with(suffix)
+    #
+    #
+    #   end
+    # end
 
     def write_entries(entries, path)
       entries.each do |entry|
@@ -83,6 +115,12 @@ module Metadata
     # Adds extension to filename. Default is "zip".
     def tempfile_name(extension = "zip")
       return "#{Dir.tmpdir}/#{random_filename(extension)}"
+    end
+
+    # Creates unique filename including path to temporary directory
+    # Adds extension to filename. Default is "zip".
+    def tempdir_name()
+      return "#{Dir.tmpdir}/#{random_filename("")}"
     end
 
     # check if exists or create if doesn't

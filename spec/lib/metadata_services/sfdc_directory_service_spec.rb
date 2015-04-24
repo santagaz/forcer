@@ -7,8 +7,9 @@ describe 'Metadata::SfdcDirectoryService' do
 
   before(:all) do
     @test_project_path = File.expand_path("../../../fixtures/TestProject", __FILE__)
-    @test_exclude_file_path = File.expand_path("../../../fixtures/exclude_components.yml", __FILE__)
-    @directory_service = Metadata::SfdcDirectoryService.new(@test_project_path, @test_exclude_file_path)
+    @exclude_component_path = File.expand_path("../../../fixtures/exclude_components.yml", __FILE__)
+    @exclude_xml_path = File.expand_path("../../../fixtures/exclude_xml_nodes.yml", __FILE__)
+    @directory_service = Metadata::SfdcDirectoryService.new(@test_project_path, @exclude_component_path, @exclude_xml_path)
     @path_package_xml = File.join(@test_project_path, "/project/src/package.xml")
     @temp_zip_filename = @directory_service.write
     @zip_file = Zip::File.open(@temp_zip_filename)
