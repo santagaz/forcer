@@ -43,12 +43,15 @@ describe 'Metadata::SfdcDirectoryService' do
   describe "zip file" do
     it "contains file from source" do
       expect(@zip_file.find_entry("classes/DummyClass.cls")).to_not be_nil
-      expect(@zip_file.find_entry("package.xml")).to_not be_nil
       expect(@zip_file.find_entry("NOT_EXISTING_FILE")).to be_nil
     end
 
     it "contains directories from source" do
       expect(@zip_file.find_entry("objects/")).to_not be_nil
+    end
+
+    it "leaves package.xml intact" do
+      expect(@zip_file.read("package.xml")).to include("<version>")
     end
   end
 
@@ -56,6 +59,10 @@ describe 'Metadata::SfdcDirectoryService' do
     it "extracts xml snippet from file" do
       doc = Nokogiri::XML(@zip_file.read('profiles/Admin.profile'))
       expect(doc.search("*//layoutAssignments/layout[starts-with('Social')]")).to be_empty
+    end
+
+    it "saves original into file" do
+      expect(@zip_file.read('profiles/Admin.profile')).to_not be_empty
     end
   end
 
@@ -75,3 +82,4 @@ end
 #
 # doc.search("*//layoutAssignments/layout[text()='SocialPersona-Social Persona Layout']")
 # doc.search("*//layoutAssignments/layout[starts-with('Social')]")
+# doc.xpath("*//layoutAssignments/layout[text()='SocialPersona-Social Persona Layout']")

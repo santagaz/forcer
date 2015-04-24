@@ -1,2 +1,4 @@
 :".profile":
   - "*//layoutAssignments/layout[starts-with('Social')]"
+  - "abra-cadabra"
+  - "huga-chaga"

@@ -19,6 +19,7 @@ module Metadata
 
       prepare_files_to_exclude(exclude_components_filename)
       prepare_xml_nodes_to_exclude(exclude_xml_nodes_filename)
+      @common_suffixes = Set.new([".profile"])
     end
 
     # copy files from original directory to be xml_filtered later
@@ -62,20 +63,44 @@ module Metadata
       end
 
       @snippets_to_exclude = YAML.load_file(exclude_filename)
-      # YAML.load_file(exclude_filename).each do |key, value|
-      #   # @snippets_to_exclude[key] << value
-      #   pp "=== #{key} => #{value}"
-      # end
+      YAML.load_file(exclude_filename).each do |key, value|
+        # @snippets_to_exclude[key] << value
+        # pp "=== #{key} => #{value}"
+      end
       # pp "====== snippets => #{@snippets_to_exclude} ==== #{@snippets_to_exclude.class}"
     end
 
-    # def filter_xml(filename)
-    #   @snippets_to_exclude.each do |suffix|
-    #     next unless filename.end_with(suffix)
-    #
-    #
-    #   end
-    # end
+    # Opens file. Removes all bad xml snippets. Rewrites results back into original file
+    def filter_xml(filename)
+      doc = Nokogiri::XML(File.read(filename))
+      # if (filename.end_with?("package.xml"))
+      #   p "======= errors of package.xml => #{doc.errors}"
+      # end
+      file_modified = false
+      @snippets_to_exclude.each do |suffix, snippets|
+        next unless filename.end_with?(suffix.to_s)
+        # p "==== processing suffix = #{suffix} vs #{filename}"
+        # p "==== processing snippets = #{snippets}"
+        snippets.each do |search_string|
+          # pp "==== processing snippet = #{search_string}"
+          nodes = doc.search(search_string.to_s)
+          unless nodes.empty?
+            file_modified = true
+            nodes.each do |n|
+              parent = n.parent
+              n.remove
+              parent.remove if parent.content.strip.empty?
+            end
+          end
+        end
+      end
+      File.open(filename, "w") do |file|
+        file.print(doc.to_xml)
+      end if file_modified
+      # if (filename.end_with?("Admin.profile"))
+      #   FileUtils.cp(filename, "/Users/gt/Desktop/testAdmin.profile")
+      # end
+    end
 
     def write_entries(entries, path)
       entries.each do |entry|
@@ -91,6 +116,10 @@ module Metadata
           sub_dir = dir_content(disk_file_path)
           write_entries(sub_dir, zip_file_path)
         else
+          # @common_suffixes.each do |suffix|
+          #   filter_xml(disk_file_path) if disk_file_path.end_with?(suffix)
+          # end
+          filter_xml(disk_file_path)
           @zip_io.add(zip_file_path, disk_file_path)
         end
       end
