@@ -1,6 +1,7 @@
 require "zip"
 require "securerandom"
 require "yaml"
+require "nokogiri"
 
 module Metadata
 
@@ -8,24 +9,35 @@ module Metadata
 
     public
 
-    def initialize(input_dir_name = Dir.pwd, exclude_file_name = "")
+    def initialize(input_dir_name = Dir.pwd, exclude_components_filename = "", exclude_xml_nodes_filename = "")
       # todo check if input path is directory
-      @input_dir_name = input_dir_name + "/project/src"
+      # @input_dir_name = input_dir_name + "/project/src"
+      @input_dir_name = input_dir_name
       @output_file_name = tempfile_name("zip")
-      @files_to_exclude = {}
-      prepare_files_to_exclude(exclude_file_name)
+      @files_to_exclude = Set.new()
+      @snippets_to_exclude = {}
+
+      prepare_files_to_exclude(exclude_components_filename)
+      prepare_xml_nodes_to_exclude(exclude_xml_nodes_filename)
     end
 
+    # copy files from original directory to be xml_filtered later
     # Create zip file with contents of force.com project
     # Return absolute path to the file
     def write
       begin
         @zip_io = Zip::File.open(@output_file_name, Zip::File::CREATE)
         verify_package_xml
+
+        tmpdir = Dir.mktmpdir
+        FileUtils.cp_r(@input_dir_name + "/project/src", tmpdir)
+        @input_dir_name = tmpdir.to_s + "/src"
+
         entries = dir_content(@input_dir_name)
         write_entries(entries, "")
       ensure
-        @zip_io.close
+        @zip_io.close # close before deleting tmpdir, or NOT_FOUND exception
+        FileUtils.remove_entry(tmpdir)
       end
 
       return @output_file_name
@@ -33,16 +45,64 @@ module Metadata
 
     private
 
-    def prepare_files_to_exclude(exclude_file_name)
-
-      if exclude_file_name.empty? || not(File.exists?(exclude_file_name))
-        exclude_file_name = File.expand_path("../exclude_components.yml", __FILE__)
+    def prepare_files_to_exclude(exclude_filename)
+      if exclude_filename.empty? || not(File.exists?(exclude_filename))
+        exclude_filename = File.expand_path("../exclude_components.yml", __FILE__)
       end
 
       @files_to_exclude = Set.new()
-      YAML.load_file(exclude_file_name).each do |name|
+      YAML.load_file(exclude_filename).each do |name|
         @files_to_exclude.add(name.to_s.downcase)
       end
+    end
+
+    def prepare_xml_nodes_to_exclude(exclude_filename)
+      if exclude_filename.empty? || not(File.exists?(exclude_filename))
+      exclude_filename = File.expand_path("../exclude_xml_nodes.yml", __FILE__)
+      end
+
+      @snippets_to_exclude = YAML.load_file(exclude_filename)
+      # YAML.load_file(exclude_filename).each do |suffix, expressions|
+      #   @snippets_to_exclude[key] << value
+      #   pp "=== #{key} => #{value}"
+      #   expressions.each do |exp, flag|
+      #     pp "=== exp => #{exp}"
+      #     pp "=== exp => #{flag}"
+      #   end
+      # end
+      # pp "====== snippets => #{@snippets_to_exclude} ==== #{@snippets_to_exclude.class}"
+    end
+
+    # Opens file. Removes all bad xml snippets. Rewrites results back into original file
+    def filter_xml(filename)
+      doc = Nokogiri::XML(File.read(filename))
+      # if (filename.end_with?("package.xml"))
+      #   p "======= errors of package.xml => #{doc.errors}"
+      # end
+      file_modified = false
+      @snippets_to_exclude.each do |suffix, expressions|
+        next unless filename.end_with?(suffix.to_s)
+        # p "==== processing suffix = #{suffix} vs #{filename}"
+        # p "==== processing snippets = #{snippets}"
+        expressions.each do |search_string, should_remove_parent|
+          # pp "==== processing snippet = #{search_string}"
+          nodes = doc.search(search_string.to_s)
+          unless nodes.empty?
+            file_modified = true
+            nodes.each do |n|
+              parent = n.parent
+              n.remove unless should_remove_parent
+              parent.remove if should_remove_parent # || parent.content.strip.empty?
+            end
+          end
+        end
+      end
+      File.open(filename, "w") do |file|
+        file.print(doc.to_xml)
+      end if file_modified
+      # if (filename.end_with?("Admin.profile"))
+      #   FileUtils.cp(filename, "/Users/gt/Desktop/testAdmin.profile")
+      # end
     end
 
     def write_entries(entries, path)
@@ -59,6 +119,7 @@ module Metadata
           sub_dir = dir_content(disk_file_path)
           write_entries(sub_dir, zip_file_path)
         else
+          filter_xml(disk_file_path)
           @zip_io.add(zip_file_path, disk_file_path)
         end
       end
@@ -83,6 +144,12 @@ module Metadata
     # Adds extension to filename. Default is "zip".
     def tempfile_name(extension = "zip")
       return "#{Dir.tmpdir}/#{random_filename(extension)}"
+    end
+
+    # Creates unique filename including path to temporary directory
+    # Adds extension to filename. Default is "zip".
+    def tempdir_name()
+      return "#{Dir.tmpdir}/#{random_filename("")}"
     end
 
     # check if exists or create if doesn't

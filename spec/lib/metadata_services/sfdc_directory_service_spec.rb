@@ -1,13 +1,15 @@
 require 'rspec'
 require_relative "../../../lib/metadata_services/sfdc_directory_service"
 require "zip"
+require 'nokogiri'
 
 describe 'Metadata::SfdcDirectoryService' do
 
   before(:all) do
     @test_project_path = File.expand_path("../../../fixtures/TestProject", __FILE__)
-    @test_exclude_file_path = File.expand_path("../../../fixtures/exclude_components.yml", __FILE__)
-    @directory_service = Metadata::SfdcDirectoryService.new(@test_project_path, @test_exclude_file_path)
+    @exclude_component_path = File.expand_path("../../../fixtures/exclude_components.yml", __FILE__)
+    @exclude_xml_path = File.expand_path("../../../fixtures/exclude_xml_nodes.yml", __FILE__)
+    @directory_service = Metadata::SfdcDirectoryService.new(@test_project_path, @exclude_component_path, @exclude_xml_path)
     @path_package_xml = File.join(@test_project_path, "/project/src/package.xml")
     @temp_zip_filename = @directory_service.write
     @zip_file = Zip::File.open(@temp_zip_filename)
@@ -41,12 +43,26 @@ describe 'Metadata::SfdcDirectoryService' do
   describe "zip file" do
     it "contains file from source" do
       expect(@zip_file.find_entry("classes/DummyClass.cls")).to_not be_nil
-      expect(@zip_file.find_entry("package.xml")).to_not be_nil
       expect(@zip_file.find_entry("NOT_EXISTING_FILE")).to be_nil
     end
 
     it "contains directories from source" do
       expect(@zip_file.find_entry("objects/")).to_not be_nil
+    end
+
+    it "leaves package.xml intact" do
+      expect(@zip_file.read("package.xml")).to include("<version>")
+    end
+  end
+
+  describe "xml filter" do
+    it "extracts xml snippet from file" do
+      doc = Nokogiri::XML(@zip_file.read('profiles/Admin.profile'))
+      expect(doc.search("*//layoutAssignments/layout[starts-with('Social')]")).to be_empty
+    end
+
+    it "saves original into file" do
+      expect(@zip_file.read('profiles/Admin.profile')).to_not be_empty
     end
   end
 
@@ -58,3 +74,12 @@ describe 'Metadata::SfdcDirectoryService' do
     end
   end
 end
+
+
+# doc = Nokogiri::XML(File.open("Admin.profile"))
+#
+# doc.search("*//layoutAssignments/layout")
+#
+# doc.search("*//layoutAssignments/layout[text()='SocialPersona-Social Persona Layout']")
+# doc.search("*//layoutAssignments/layout[starts-with('Social')]")
+# doc.xpath("*//layoutAssignments/layout[text()='SocialPersona-Social Persona Layout']")
