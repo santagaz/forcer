@@ -67,7 +67,7 @@ module Metadata
         options = {
           singlePackage: true,
           rollbackOnError: true,
-          checkOnly: true,
+          checkOnly: false,
           allowMissingFiles: false,
           runAllTests: false,
           ignoreWarnings: false
@@ -76,10 +76,10 @@ module Metadata
         # prepare xml for deployment
         deploy_options_snippet = ""
         options.each do |k, v|
-          key = k.to_s
-          val = v.to_s
           # todo take care of array options if any
-          deploy_options_snippet += "<met:#{key}>#{val}</met:#{key}>"
+          value = @args[k].nil? ? v.to_s : @args[k].to_s
+          key = k.to_s
+          deploy_options_snippet += "<met:#{key}>#{value}</met:#{key}>"
         end
 
         debug_options_snippet = "" #by default no debug options
@@ -100,9 +100,9 @@ module Metadata
         else
           p "DEPLOYMENT FAILED. CHECK DEPLOYMENT STATUS LOG IN SALESFORCE ORG."
         end
-    ensure
-      FileUtils.rm_f @zip_name
-    end
+      ensure
+        FileUtils.rm_f @zip_name
+      end
 
       return response
     end

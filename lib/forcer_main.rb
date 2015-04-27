@@ -9,12 +9,17 @@ module Forcer
     class_option :config
 
     option :source
+    option :checkOnly, :type => :boolean
+    option :rollbackOnError, :type => :boolean
+    option :runAllTests, :type => :boolean
     desc "deploy --dest destination_org_name", "Deploys project on local machine to destination org. Destination org" +
        " name should be specified in configuration.yml. Forcer asks for any information missing from configuration.yml"
     def deploy
-      all_options = verify_options(options)
-      metadata = Metadata::MetadataService.new(all_options[:source], all_options)
-      metadata.deploy
+      p " == checkOnly? #{options[:checkOnly]}"
+      p " == runAllTests? #{options[:runAllTests]}"
+      # all_options = verify_options(options)
+      # metadata = Metadata::MetadataService.new(all_options[:source], all_options)
+      # metadata.deploy
     end
 
 
