@@ -16,6 +16,7 @@ describe Metadata::MetadataService do
       password: "test_password",
       security_token: "test_token",
       types: ["CustomObject"],
+      source: File.expand_path("../../../fixtures/TestProject", __FILE__),
       unit_test_running: true
     }
     fixture_login_response = File.read(File.expand_path("../../../fixtures/login_response.xml", __FILE__))
@@ -26,9 +27,7 @@ describe Metadata::MetadataService do
     }
     savon.expects(:login).with(message: login_info).returns(fixture_login_response)
 
-    @service = Metadata::MetadataService.new(
-      File.expand_path("../../../fixtures/TestProject", __FILE__),
-      args)
+    @service = Metadata::MetadataService.new(args)
   end
 
   after(:all) { savon.unmock! }

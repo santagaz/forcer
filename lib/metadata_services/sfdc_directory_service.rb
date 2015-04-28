@@ -2,6 +2,7 @@ require "zip"
 require "securerandom"
 require "yaml"
 require "nokogiri"
+require "Find"
 
 module Metadata
 
@@ -9,16 +10,14 @@ module Metadata
 
     public
 
-    def initialize(input_dir_name = Dir.pwd, exclude_components_filename = "", exclude_xml_nodes_filename = "")
-      # todo check if input path is directory
-      # @input_dir_name = input_dir_name + "/project/src"
-      @input_dir_name = input_dir_name
+    def initialize(args = {})
+      @args = args
       @output_file_name = tempfile_name("zip")
       @files_to_exclude = Set.new()
       @snippets_to_exclude = {}
-
-      prepare_files_to_exclude(exclude_components_filename)
-      prepare_xml_nodes_to_exclude(exclude_xml_nodes_filename)
+      find_source_dir
+      prepare_files_to_exclude
+      prepare_xml_nodes_to_exclude
     end
 
     # copy files from original directory to be xml_filtered later
@@ -30,7 +29,7 @@ module Metadata
         verify_package_xml
 
         tmpdir = Dir.mktmpdir
-        FileUtils.cp_r(@input_dir_name + "/project/src", tmpdir)
+        FileUtils.cp_r(@input_dir_name, tmpdir)
         @input_dir_name = tmpdir.to_s + "/src"
 
         entries = dir_content(@input_dir_name)
@@ -45,8 +44,21 @@ module Metadata
 
     private
 
-    def prepare_files_to_exclude(exclude_filename)
-      if exclude_filename.empty? || not(File.exists?(exclude_filename))
+    def find_source_dir
+      raise Exception unless Dir.exists?(@args[:source])
+      @input_dir_name = ""
+      Find.find(@args[:source]) do |entry|
+        if entry.end_with?("src") && File.directory?(entry)
+          @input_dir_name = entry
+          break
+        end
+      end
+      raise Exception if @input_dir_name.empty?
+    end
+
+    def prepare_files_to_exclude()
+      exclude_filename = @args[:exclude_components]
+      if exclude_filename.nil? || exclude_filename.empty? || not(File.exists?(exclude_filename))
         exclude_filename = File.expand_path("../exclude_components.yml", __FILE__)
       end
 
@@ -56,9 +68,10 @@ module Metadata
       end
     end
 
-    def prepare_xml_nodes_to_exclude(exclude_filename)
-      if exclude_filename.empty? || not(File.exists?(exclude_filename))
-      exclude_filename = File.expand_path("../exclude_xml_nodes.yml", __FILE__)
+    def prepare_xml_nodes_to_exclude()
+      exclude_filename = @args[:exclude_xml]
+      if exclude_filename.nil? || exclude_filename.empty? || not(File.exists?(exclude_filename))
+        exclude_filename = File.expand_path("../exclude_xml_nodes.yml", __FILE__)
       end
 
       @snippets_to_exclude = YAML.load_file(exclude_filename)

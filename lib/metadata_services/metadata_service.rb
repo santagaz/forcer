@@ -27,8 +27,7 @@ module Metadata
     API_VERSION = 33.0 # todo move to constants file
     attr_accessor :metadata_client, :current_session_id, :zip_name
 
-    def initialize(target_dir_name, args = {})
-      @target_dir_name = Dir.exists?(target_dir_name) ? target_dir_name : Dir.pwd
+    def initialize(args = {})
       @args = args
       @metadata_client = get_client
     end
@@ -59,7 +58,7 @@ module Metadata
 
     def deploy
       begin
-        dir_zip_service = SfdcDirectoryService.new(@target_dir_name)
+        dir_zip_service = SfdcDirectoryService.new(@args)
         @zip_name = dir_zip_service.write
         blob_zip = Base64.encode64(File.open(@zip_name, "rb").read)
 
