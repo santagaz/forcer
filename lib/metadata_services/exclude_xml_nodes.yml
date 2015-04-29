@@ -2,3 +2,7 @@
   - [ "*//layoutAssignments/layout[starts-with('Social')]" , true ]
   - [ "*//tabVisibilities/tab[starts-with('standard-Social')]" , true ]
   - [ "*/assignedTo[starts-with('forcertest@')]" , true ]
+  - [ "*//relatedLists/relatedList[starts-with('RelationSolutionList')]" , true ]
+
+:"package.xml":
+  - [ "*//types/members[text()='Idea']" , false]

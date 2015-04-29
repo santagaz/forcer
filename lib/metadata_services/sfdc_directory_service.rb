@@ -26,7 +26,7 @@ module Metadata
     def write
       begin
         @zip_io = Zip::File.open(@output_file_name, Zip::File::CREATE)
-        verify_package_xml
+        raise "package.xml NOT FOUND" unless verify_package_xml
 
         tmpdir = Dir.mktmpdir
         FileUtils.cp_r(@input_dir_name, tmpdir)
@@ -39,6 +39,7 @@ module Metadata
         FileUtils.remove_entry(tmpdir)
       end
 
+      # FileUtils.cp_r(@output_file_name, "/Users/gt/Desktop/temp.zip")
       return @output_file_name
     end
 
@@ -169,7 +170,8 @@ module Metadata
     def verify_package_xml
       path = File.join(File.expand_path(@input_dir_name, __FILE__), "package.xml")
       if File.exists?(path)
-        return "package.xml FOUND"
+        p "package.xml FOUND"
+        return true
       else
         # todo logic to create package.xml. use default file
         return false
