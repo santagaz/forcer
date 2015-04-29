@@ -8,11 +8,11 @@ module Forcer
     class_option :dest, :aliases => :d
     class_option :config
 
-    option :source, :aliases => :s, :desc => "Path to 'src' directory"
+    option :source, :aliases => :s, :desc => "Path to folder that contains 'src' directory somewhere. No restriction on exact 'src' location, except it should be somewhere in :sourse."
     option :checkOnly, :type => :boolean, :aliases => :c, :desc => "Only validates without actual deployment. Default is FALSE."
     option :rollbackOnError, :type => :boolean, :aliases => :r, :desc => "Rolls back whole deployment if error occurs. Default is TRUE."
     option :runAllTests, :type => :boolean, :aliases => :t, :desc => "Make all unit tests run. Default if FALSE. For production deployment it is always true."
-    desc "deploy --dest destination_org_name", "Deploys project on local machine to destination org. Destination org" +
+    desc "deploy --dest destination_org_name", "Deploys project from local machine to destination org. Destination org" +
        " name should be specified in configuration.yml. Forcer asks for any information missing from configuration.yml"
     def deploy
       all_options = verify_options(options)
