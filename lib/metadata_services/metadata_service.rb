@@ -100,6 +100,7 @@ module Metadata
           p "DEPLOYMENT FAILED. CHECK DEPLOYMENT STATUS LOG IN SALESFORCE ORG."
         end
       ensure
+        p "deleting zip file with project metadata"
         FileUtils.rm_f @zip_name
       end
 
@@ -109,6 +110,7 @@ module Metadata
     private
     # login to salesforce and obtain session information
     def login
+      "login request to #{@args[:host]}"
       endpoint_url = @args[:host]
       options = {
         endpoint: "#{endpoint_url}/services/Soap/c/#{API_VERSION}",
@@ -134,6 +136,7 @@ module Metadata
     # using session information create metadata client
     def get_client
       login
+      p "creating metadata client from wsdl"
       options = {
         wsdl: File.expand_path("../metadata.wsdl", __FILE__),
         endpoint: @metadata_server_url,

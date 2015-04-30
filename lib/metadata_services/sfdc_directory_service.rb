@@ -28,14 +28,18 @@ module Metadata
         @zip_io = Zip::File.open(@output_file_name, Zip::File::CREATE)
         raise "package.xml NOT FOUND" unless verify_package_xml
 
+        p "making temporary copy of project folder"
         tmpdir = Dir.mktmpdir
         FileUtils.cp_r(@input_dir_name, tmpdir)
         @input_dir_name = tmpdir.to_s + "/src"
 
         entries = dir_content(@input_dir_name)
+        p "excluding specified components from deployment"
+        p "filtering deployment files removing specified XML elements"
         write_entries(entries, "")
       ensure
         @zip_io.close # close before deleting tmpdir, or NOT_FOUND exception
+        p "deleting temporary copy of project folder"
         FileUtils.remove_entry(tmpdir)
       end
 
@@ -51,6 +55,7 @@ module Metadata
       Find.find(@args[:source]) do |entry|
         if entry.end_with?("src") && File.directory?(entry)
           @input_dir_name = entry
+          p "found 'src' directory"
           break
         end
       end

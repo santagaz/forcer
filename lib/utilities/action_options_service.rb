@@ -5,6 +5,7 @@ module Forcer
 
     # attempts to read salesforce org information from yaml
     def self.load_config_file(old_options = {})
+      p "attempting to load configuration.yml"
       options = {}
       old_options.each do |k, v|
         options.store(k.to_sym, v)

@@ -52,12 +52,11 @@ module Forcer
 
     private
     def print_status(details)
-      p "========== status begin"
-      p "DONE : #{details[:check_deploy_status_response][:result][:done]}"
-      p "STATUS : #{details[:check_deploy_status_response][:result][:status]}"
-      p "SUCCESS : #{details[:check_deploy_status_response][:result][:success]}"
-      p "========== status end"
-      p "^^^^^^^^^^^^^^^^^^^^^"
+      # status =  "DONE : #{details[:check_deploy_status_response][:result][:done]} | "
+      status = "STATUS : #{details[:check_deploy_status_response][:result][:status]} | "
+      status += "SUCCESS : #{details[:check_deploy_status_response][:result][:success]}"
+      p status
+      p "==============="
     end
 
   end
