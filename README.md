@@ -1,5 +1,6 @@
 # Forcer
 [![Gem Version](https://badge.fury.io/rb/forcer.svg)](http://badge.fury.io/rb/forcer)
+[![Build Status](https://travis-ci.org/gazazello/forcer.svg?branch=master)](https://travis-ci.org/gazazello/forcer)
 
 forcer is a ruby command line application and gem designed to help force.com developers who utilize git and proper development process that includes:
 
