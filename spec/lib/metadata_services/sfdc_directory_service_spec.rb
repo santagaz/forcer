@@ -53,7 +53,7 @@ describe 'Metadata::SfdcDirectoryService' do
     end
 
     it "contains directories from source" do
-      expect(@zip_file.find_entry("objects/")).to_not be_nil
+      expect(@zip_file.find_entry("classes/")).to_not be_nil
     end
 
     it "leaves package.xml intact" do
