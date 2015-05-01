@@ -5,6 +5,13 @@ forcer is a ruby command line application and gem designed to help force.com dev
 2. code reviews
 3. parallel development of multiple features by a single developer
 
+advantages over traditional ant scripts:
+
+1. Configurability
+2. Easy integration with CI (i.e. Jenkins) 
+3. Commands for specific tasks (i.e. delete components or rename components)
+4. Easily add REST Api functionality (i.e. load initial data after new org created)
+
 
 This project is inspired by metaforce. It turned out to be easier to start my own project after trying to understand how metaforce
 is written and attempting to contribute into it. So after days of reading metaforces code and trying to understand, how
