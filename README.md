@@ -88,10 +88,13 @@ password (it is strongly recommended to avoid storing password) can be saved in 
 It should be in the same directory where you call forcer. Then the app can pick it up and login properly.
 
     $: ls
-    ./project/src
     ./configuration.yml
     ...
     
+    $: forcer deploy ...
+    
+This allows having separate "configuration.yml" file for each project. If you are calling forcer from git repo directory
+with project files, please add "configuration.yml" to gitignore. This should help you avoiding committing sensitive data.
 For more information on setup and usage of configuration.yml please visit wiki pages of this project. 
 
 ### Excluding certain metadata from deployment
@@ -155,6 +158,9 @@ forcer is a flexible tool that allows developers:
         [your_ruby_version_location (like ".../rvm/gems/ruby-2.2.0")]/gems/forcer-[version]/lib/metadata_services/exclude_xml_nodes.yml
     forcer is released with "exclude_xml_nodes.yml". Users (developers) can modify or replace values to exclude xml elements.
 
+Currently forcer does not allow multiple "exclude_components.xml" and "exclude_xml_nodes.xml" files.I understand that
+working on multiple projects simultaneously can require you to exclude different files/components for each project.
+Support of multiple config files can be added as a new feature per request. 
 
 ### Command line examples
 If you already filled configuration.yml correctly then deployments are much faster. Here is a sample command to start deployment of a project in current folder:

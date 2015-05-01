@@ -5,8 +5,7 @@ require_relative "./metadata_services/metadata_service"
 
 module Forcer
   class ForcerMain < Thor
-    class_option :dest, :aliases => :d
-    class_option :config
+    class_option :dest, :aliases => :d, :desc => "Alias of destination sfdc org in your configuration.yml file. If you do not have configuration.yml in current directory, just skip the option."
 
     option :source, :aliases => :s, :desc => "Path to folder that contains 'src' directory somewhere. No restriction on exact 'src' location, except it should be somewhere in :sourse."
     option :checkOnly, :type => :boolean, :aliases => :c, :desc => "Only validates without actual deployment. Default is FALSE."
