@@ -2,7 +2,7 @@ require "zip"
 require "securerandom"
 require "yaml"
 require "nokogiri"
-require "Find"
+require "find"
 
 module Metadata
 
