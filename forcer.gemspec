@@ -6,11 +6,11 @@ require 'forcer/version'
 Gem::Specification.new do |spec|
   spec.name          = "forcer"
   spec.version       = Forcer::VERSION
-  spec.authors       = ["gaziz tazhenov"]
-  spec.email         = ["gaziztazhenov@gmail.com"]
+  spec.authors       = "gaziz tazhenov"
+  spec.email         = "gaziztazhenov@gmail.com"
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
+  spec.summary       = "facilitates change management for dev teams who use force.com and git"
+  spec.description   = "command line tool written in ruby that performs metadata deployment, list of components in salesforce org"
   spec.homepage      = "TODO: Put your gem's website or public repo URL here."
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
