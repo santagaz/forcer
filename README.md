@@ -1,10 +1,11 @@
 # Forcer
 forcer is a ruby gem designed to help force.com developers who utilize git and proper development process that includes:
-every developer should have a separate dev_org\dev_sandbox
-code reviews
-parallel development of multiple features by a single developer
 
-This project is inspired by metaforce. It turned to be easier to start my own project after trying to understand how metaforce
+1. every developer should have a separate dev_org\dev_sandbox
+2. code reviews
+3. parallel development of multiple features by a single developer
+
+This project is inspired by metaforce. It turned out to be easier to start my own project after trying to understand how metaforce
 is written and attempting to contribute into it. So after days of reading metaforces code and trying to understand, how
 SOAP api calls are done to salesforce and how 'thor' is used to create command line app, I was ready to write my own tool.
 The idea is to make structure of forcer simpler than metaforce and let contributors understand code by reading smaller amount
@@ -34,36 +35,43 @@ Currently the app is tested and being used only on Mac OS. Sorry Linux/Windows u
 forcer available for first Linux and then Windows. Linux is first because it is easier.
 
 call help to list all available operations for forcer:
-home $: forcer help
-deploy ...
-list ...
-...
+
+    $: forcer help
+    deploy ...
+    list ...
+    ...
 
 to list options and flags available for each command call help for each operation separately:
-home $: forcer deploy help
---dest ...
---checkOnly ...
-...
+
+    $: forcer deploy help
+    --dest ...
+    --checkOnly ...
+    ...
+
 
 Here is a sample command to start deployment of a project in current folder:
-home $: forcer deploy --dest dest_alias_in_configuration_yml
+    $: forcer deploy --dest dest_alias_in_configuration_yml
 
 This command will recursively search for sfdc project source folder "src" and use the first found for deployment.
 Please note that "src" folder must contain a valid package.xml file that you intend to use for deployment.
 
 If you want to call validation-only request then, since it is a part of "deploy" soap call, you need to just add flag --checkOnly :
-home $: forcer deploy --dest dest_alias_in_configuration_yml --checkOnly
+
+    $: forcer deploy --dest dest_alias_in_configuration_yml --checkOnly
+
 
 Please note almost all options support short aliases. So the same validation-only command will look like:
-home $: forcer deploy -d dest_alias_in_configuration_yml -c
+
+    $: forcer deploy -d dest_alias_in_configuration_yml -c
 
 
 After program successfully starts deploy (or any other available command) the program starts printing status messages in console:
-"initiating DEPLOYMENT"
-"DEPLOYMENT STARTED. YOU CAN ALSO CHECK DEPLOYMENT STATUS IN SALESFORCE ORG."
-"REQUESTING STATUS"
-"STATUS : InProgress | SUCCESS : false"
-"==============="
+
+    "initiating DEPLOYMENT"
+    "DEPLOYMENT STARTED. YOU CAN ALSO CHECK DEPLOYMENT STATUS IN SALESFORCE ORG."
+    "REQUESTING STATUS"
+    "STATUS : InProgress | SUCCESS : false"
+    "==============="
 
 Please note that messages and language can and will change because the app development is an ongoing process.
 
