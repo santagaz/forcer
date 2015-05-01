@@ -10,8 +10,8 @@ This project is inspired by metaforce. It turned out to be easier to start my ow
 is written and attempting to contribute into it. So after days of reading metaforces code and trying to understand, how
 SOAP api calls are done to salesforce and how 'thor' is used to create command line app, I was ready to write my own tool.
 The idea is to make structure of forcer simpler than metaforce and let contributors understand code by reading smaller amount
-of files. I admit that my code is not perfect and far from professional ruby styles, so I will be glad if you (yes I mean you!)
-help me. But please lets keep this tool simple with only necessary commands and functionality.
+of files. I admit that my code is not perfect and far from professional ruby styles, so I will be glad if you help me.
+But please lets keep this tool simple with only necessary commands and functionality.
 
 
 ## Installation
@@ -31,17 +31,16 @@ Or install it yourself as:
     $ gem install forcer
 
 ## Usage
-Currently the app is tested and being used only on Mac OS. Sorry Linux/Windows users! But I will do my best to make
-forcer available for first Linux and then Windows. Linux is first because it is easier.
+Currently the app is tested and being used only on Mac OS. I will do my best to make forcer available for Linux and Windows.
 
-call help to list all available operations for forcer:
+Call help to list all available operations for forcer:
 
     $: forcer help
     deploy ...
     list ...
     ...
 
-to list options and flags available for each command call help for each operation separately:
+To list options and flags available for each command call help for each operation separately:
 
     $: forcer deploy help
     --dest ...
@@ -60,6 +59,10 @@ to project folder that somewhere inside contains folder "src" with all metadata 
 Here is a very simple deploy command:
 
     $: forcer deploy
+    
+This command will start deployment recursively searching for sfdc project source folder "src" and using the first found for deployment.
+Please note that "src" folder must contain a valid package.xml file that you intend to use for deployment.
+
 
 ### Configuration
 forcer can store information about deployment organization to avoid typing details for each deployment. Information like username, 
@@ -88,9 +91,6 @@ If you already filled configuration.yml correctly then deployments are much fast
 
     $: forcer deploy --dest dest_alias_in_configuration_yml
 
-This command will recursively search for sfdc project source folder "src" and use the first found for deployment.
-Please note that "src" folder must contain a valid package.xml file that you intend to use for deployment.
-
 If you want to call validation-only request then, since it is part of "deploy" soap call, you need to just add flag --checkOnly :
 
     $: forcer deploy --dest dest_alias_in_configuration_yml --checkOnly
@@ -112,7 +112,7 @@ After forcer successfully starts deploy (or any other available command) the pro
 Please note that messages and language can and will change because the app development is an ongoing process.
 
 
-## Contributing (surprise surprise! guess the steps!)
+## Contributing
 
 1. Fork it ( https://github.com/gazazello/forcer/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
