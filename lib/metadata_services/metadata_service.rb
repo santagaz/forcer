@@ -153,19 +153,3 @@ module Metadata
 
   end # class MetadataService
 end # module Metadata
-
-# test area
-
-  # args = {
-  #   host: "https://test.salesforce.com",
-  #   username: "gaziz@eventbrite.com.comitydev",
-  #   password: "?kMMTR[d}X7`Fd}>@T.",
-  #   security_token: "fpX1t6k2We39Qtq42NKbnLWSQ"
-  # }
-  # metadata_service = Metadata::MetadataService.new(
-  #   File.expand_path("../../../tmp/TestProject", __FILE__),
-  #   args
-  # )
-  #
-  # p metadata_service.list.body
-# p metadata_service.deploy.body[:deploy_response][:result][:state]

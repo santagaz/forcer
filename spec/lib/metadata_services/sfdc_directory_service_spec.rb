@@ -14,7 +14,6 @@ describe 'Metadata::SfdcDirectoryService' do
         exclude_xml: @exclude_xml_path,
         source: @test_project_path
     }
-    #@directory_service = Metadata::SfdcDirectoryService.new(@test_project_path, @exclude_component_path, @exclude_xml_path)
     @directory_service = Metadata::SfdcDirectoryService.new(args)
     @path_package_xml = File.join(@test_project_path, "/project/src/package.xml")
     @temp_zip_filename = @directory_service.write
@@ -80,12 +79,3 @@ describe 'Metadata::SfdcDirectoryService' do
     end
   end
 end
-
-
-# doc = Nokogiri::XML(File.open("Admin.profile"))
-#
-# doc.search("*//layoutAssignments/layout")
-#
-# doc.search("*//layoutAssignments/layout[text()='SocialPersona-Social Persona Layout']")
-# doc.search("*//layoutAssignments/layout[starts-with('Social')]")
-# doc.xpath("*//layoutAssignments/layout[text()='SocialPersona-Social Persona Layout']")

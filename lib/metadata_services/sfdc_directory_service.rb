@@ -43,7 +43,6 @@ module Metadata
         FileUtils.remove_entry(tmpdir)
       end
 
-      # FileUtils.cp_r(@output_file_name, "/Users/gt/Desktop/temp.zip")
       return @output_file_name
     end
 
@@ -81,37 +80,22 @@ module Metadata
       end
 
       @snippets_to_exclude = YAML.load_file(exclude_filename)
-      # YAML.load_file(exclude_filename).each do |suffix, expressions|
-      #   @snippets_to_exclude[key] << value
-      #   pp "=== #{key} => #{value}"
-      #   expressions.each do |exp, flag|
-      #     pp "=== exp => #{exp}"
-      #     pp "=== exp => #{flag}"
-      #   end
-      # end
-      # pp "====== snippets => #{@snippets_to_exclude} ==== #{@snippets_to_exclude.class}"
     end
 
     # Opens file. Removes all bad xml snippets. Rewrites results back into original file
     def filter_xml(filename)
       doc = Nokogiri::XML(File.read(filename))
-      # if (filename.end_with?("package.xml"))
-      #   p "======= errors of package.xml => #{doc.errors}"
-      # end
       file_modified = false
       @snippets_to_exclude.each do |suffix, expressions|
         next unless filename.end_with?(suffix.to_s)
-        # p "==== processing suffix = #{suffix} vs #{filename}"
-        # p "==== processing snippets = #{snippets}"
         expressions.each do |search_string, should_remove_parent|
-          # pp "==== processing snippet = #{search_string}"
           nodes = doc.search(search_string.to_s)
           unless nodes.empty?
             file_modified = true
             nodes.each do |n|
               parent = n.parent
-              n.remove unless should_remove_parent
-              parent.remove if should_remove_parent # || parent.content.strip.empty?
+              n.remove unless should_remove_parent # remove only node if parent to stay
+              parent.remove if should_remove_parent # remove the whole parent node with all children including current node
             end
           end
         end
@@ -119,9 +103,6 @@ module Metadata
       File.open(filename, "w") do |file|
         file.print(doc.to_xml)
       end if file_modified
-      # if (filename.end_with?("Admin.profile"))
-      #   FileUtils.cp(filename, "/Users/gt/Desktop/testAdmin.profile")
-      # end
     end
 
     def write_entries(entries, path)
@@ -184,7 +165,3 @@ module Metadata
     end
   end # class SfdcDirectoryService
 end # module Metadata
-
-# simple test
-# test_generator = Metadata::SfdcDirectoryService.new("/Users/gt/Desktop/TestProject")
-# test_generator.write
