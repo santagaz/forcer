@@ -76,7 +76,7 @@ Please note that "src" folder must contain a valid package.xml file that you int
 
 ### Configuration
 forcer can store information about deployment organization to avoid typing details for each deployment. Information like username, 
-password (it is strongly recommended to avoid storing password) can be saved in configuration.yml file. And here is a template content:
+password (it is strongly recommended to avoid storing password) can be saved in "configuration.yml" file. And here is a template content:
 
     anything_as_your_org_alias:
       host: login.salesforce.com
@@ -84,16 +84,76 @@ password (it is strongly recommended to avoid storing password) can be saved in 
       password:
       security_token: sample_token
       
+#### Where to put "configuration.yml"?
+It should be in the same directory where you call forcer. Then the app can pick it up and login properly.
+
+    $: ls
+    ./project/src
+    ./configuration.yml
+    ...
+    
 For more information on setup and usage of configuration.yml please visit wiki pages of this project. 
 
 ### Excluding certain metadata from deployment
-forcer is a flexible tool that allows developers exclude certain:
+forcer is a flexible tool that allows developers:
+    
+- Exclude certain ncomponents (metadata files) and even whole folders from deployment. For example object Idea.object (excluded by default) usually fails deployments.
 
-1. components (metadata files) from deployment. For example object Idea.object (excluded by default) usually fails deployments.
-2. XML elements from deployment. For example all references to "Social..." layouts (excluded by default) in profiles fail deployments.
+    #### How to exclude components and folders from deployment?
+    Name of the file is "exclude_components.yml".
+    
+    #### "exclude_components.yml" contains:
+    
+        - objects/Idea.object
+        - layouts/SocialPersona-Social Persona Layout.layout
+        - layouts/SocialPost-Social Post Layout.layout
+        - profiles # excludes whole profiles directory
+      
+    #### Where should I place "exclude_components.yml"?
+    
+        [your_ruby_version_location (like ".../rvm/gems/ruby-2.2.0")]/gems/forcer-0.4.1/lib/metadata_services/exclude_components.yml
+    forcer is released with default "exclude_components.yml". Users (developers) can modify or replace values to exclude
+    certain components or folders.
+    
 
-For more information on how to use configuration files to exclude components and XML snippets please visit wiki pages
-of this project.
+- Exclude certain XML elements from deployment. For example all references to "Social..." layouts (excluded by default) in profiles fail deployments.
+
+    #### How to exclude XML elements (snippets) from deployment?
+    Name of the file is "exclude_xml_nodes.yml".
+    
+    #### Sample "exclude_xml_nodes.yml":
+    
+        :".profile":
+          - [ "*//layoutAssignments/layout[starts-with('Social')]" , true ]
+          - [ "*//tabVisibilities/tab[starts-with('standard-Social')]" , true ]
+          
+    This means "for all files with filenames ending with '.profiles' do 
+       
+      find snippets like:
+      
+          <layoutAsignments>
+            <layout>Social blah blah blah</layout>
+          </layoutAsignments>
+      
+      Then take the first parameter which is nokogiri expression. forcer automatically removes all found nodes from document
+      
+          <layout>Social blah blah blah</layout>
+          
+      Then if second parameter is TRUE, remove parent node too. In this example remove
+            
+          <layoutAsignments>
+          </layoutAsignments>
+          
+      Alternatively if second parameter is FALSE then parent node will remain in the document
+          
+    The same logic applies for the second sample value:
+    
+        - [ "*//tabVisibilities/tab[starts-with('standard-Social')]" , true ]
+      
+    #### Where should I place "exclude_xml_nodes.yml"?
+    
+        [your_ruby_version_location (like ".../rvm/gems/ruby-2.2.0")]/gems/forcer-[version]/lib/metadata_services/exclude_xml_nodes.yml
+    forcer is released with "exclude_xml_nodes.yml". Users (developers) can modify or replace values to exclude xml elements.
 
 
 ### Command line examples
