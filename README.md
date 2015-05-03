@@ -23,6 +23,9 @@ The idea is to make structure of forcer simpler than metaforce and let contribut
 of files. I admit that my code is not perfect and far from professional ruby styles, so I will be glad if you help me.
 But please lets keep this tool simple with only necessary commands and functionality.
 
+## System Requirements
+Mac OS or Linux
+ruby 2.1.2 or later
 
 ## Installation
 
@@ -41,7 +44,8 @@ Or install it yourself as:
     $ gem install forcer
 
 ## Usage
-Currently the app is tested and being used only on Mac OS. I will do my best to make forcer available for Linux and Windows.
+Currently the app is tested and being used only on Mac OS and Linux (I used Ubuntu). I have NOT tested on Windows yet, but
+if you try and report results on Windows, other developers would be thankful.
 
 Call help to list all available operations for forcer:
 
@@ -186,6 +190,20 @@ After forcer successfully starts deploy (or any other available command) the pro
     "==============="
 
 Please note that messages and language can and will change because the app development is an ongoing process.
+
+## Possible problems
+
+1. When we tried to run forcer on ruby version 2.1.5, the app threw exception about missing library "em-http-request". If
+you have ruby version 2.1.5 installed and cannot resolve dependencies, I can only suggest to switch to ruby version
+to 2.1.2 or 2.2.0 or later.
+2.  openssl library version 1.0.2 has problems with ruby 2.2.0 when deploy larger zip-files. In order to fix please follow steps:
+
+        $: brew update
+        $: brew uninstall openssl
+        $: brew install openssl
+        $: rvm get head
+        $: rvm remove 2.2.0
+        $: rvm install 2.2.0 --with-openssl-dir=`brew --prefix openssl`
 
 
 ## Contributing
