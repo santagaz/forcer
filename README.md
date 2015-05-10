@@ -1,6 +1,7 @@
 # Forcer
 [![Gem Version](https://badge.fury.io/rb/forcer.svg)](http://badge.fury.io/rb/forcer)
 [![Build Status](https://travis-ci.org/gazazello/forcer.svg?branch=master)](https://travis-ci.org/gazazello/forcer)
+[![Code Climate](https://codeclimate.com/github/gazazello/forcer/badges/gpa.svg)](https://codeclimate.com/github/gazazello/forcer)
 
 forcer is a ruby command line application and gem designed to help force.com developers who utilize git and proper development process that includes:
 
@@ -88,7 +89,7 @@ password (it is strongly recommended to avoid storing password) can be saved in 
       password:
       security_token: sample_token
       
-#### Where to put "configuration.yml"?
+#### Where should I place "configuration.yml"?
 It should be in the same directory where you call forcer. Then the app can pick it up and login properly.
 
     $: ls
