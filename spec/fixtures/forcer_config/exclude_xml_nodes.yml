@@ -1,0 +1,6 @@
+:".profile":
+  - ["*//layoutAssignments/layout[starts-with('Social')]", true]
+  - ["abra-cadabra", false]
+  - ["huga-chaga", false]
+
+:"config_forcer_directory":

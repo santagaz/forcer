@@ -6,6 +6,10 @@ require_relative "./metadata_services/metadata_service"
 module Forcer
   class ForcerMain < Thor
     class_option :dest, :aliases => :d, :desc => "Alias of destination sfdc org in your configuration.yml file. If you do not have configuration.yml in current directory, just skip the option."
+    class_option :config_dir, :desc => "Path to configuration directory named 'forcer_config'. Directory must contain
+      files 'exclude_components.yml' and 'exclude_xml_nodes.yml'. Optional file is 'configuration.yml' which, if missing
+      in 'forcer_config', will be loaded from current directory. By default or if not found in specified location,
+      folder 'forcer_config' is assumed to be in the current directory."
 
     option :source, :aliases => :s, :desc => "Path to folder that contains 'src' directory somewhere. No restriction on exact 'src' location, except it should be somewhere in :sourse."
     option :checkOnly, :type => :boolean, :aliases => :c, :desc => "Only validates without actual deployment. Default is FALSE."
@@ -25,7 +29,7 @@ module Forcer
     no_commands do
       def verify_options(old_options = {})
         p "verifying deployment information"
-        new_options = ActionOptionsService.load_config_file(old_options)
+        new_options = ActionOptionsService.load_config(old_options)
         new_options[:host] ||=  "https://" + ask("Enter org url (test.salesforce.org or login.salesforce.org): ")
         new_options[:username] ||= ask("Enter username: ")
         new_options[:password] ||= ask("Enter password: ", :echo => false)

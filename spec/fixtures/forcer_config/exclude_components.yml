@@ -1,0 +1,4 @@
+- classes/FileToExclude.cls
+- classes/FileToExclude.cls-meta.xml
+- workflows
+- config_forcer_directory # check this line to test if config directory loaded

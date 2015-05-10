@@ -3,3 +3,6 @@ fake_sandbox:
   username: test_username
   password:
   security_token: test_token
+  config_forcer_directory: true
+
+

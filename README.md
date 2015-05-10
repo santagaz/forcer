@@ -198,7 +198,7 @@ Please note that messages and language can and will change because the app devel
 1. When my friend tried to run forcer on ruby version 2.1.5 on Ubuntu, the app threw exception about missing library
 "em-http-request". If you have ruby version 2.1.5 installed and cannot resolve dependencies, probably the simplest
 solution is switching to ruby version to 2.1.2 or 2.2.0 or later.
-2.  openssl library version 1.0.2 on Mac OS (maybe other platforms too) has problems with ruby 2.2.0 when deploy larger
+2. openssl library version 1.0.2 on Mac OS (maybe other platforms too) has problems with ruby 2.2.0 when deploy larger
 zip-files. In order to fix please follow steps:
 
         $: brew update
@@ -207,6 +207,14 @@ zip-files. In order to fix please follow steps:
         $: rvm get head
         $: rvm remove 2.2.0
         $: rvm install 2.2.0 --with-openssl-dir=`brew --prefix openssl`
+        
+3. Contributors may encounter problems with bundler and code-climate if run rspec. The easiest solution is to comment out
+these lines in file spec_helper.rb :
+
+        if Gem.available?("codeclimate-test-reporter")
+          require "codeclimate-test-reporter"
+          CodeClimate::TestReporter.start
+        end
 
 
 ## Contributing
@@ -216,9 +224,3 @@ zip-files. In order to fix please follow steps:
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
-
-NOTE: You may encounter problems with bundler and code-climate if run rspec. The easiest solution is to comment out
-these two lines in file spec_helper.rb :
-
-    require "codeclimate-test-reporter"
-    CodeClimate::TestReporter.start
