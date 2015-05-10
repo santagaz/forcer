@@ -2,6 +2,7 @@
 [![Gem Version](https://badge.fury.io/rb/forcer.svg)](http://badge.fury.io/rb/forcer)
 [![Build Status](https://travis-ci.org/gazazello/forcer.svg?branch=master)](https://travis-ci.org/gazazello/forcer)
 [![Code Climate](https://codeclimate.com/github/gazazello/forcer/badges/gpa.svg)](https://codeclimate.com/github/gazazello/forcer)
+[![Test Coverage](https://codeclimate.com/github/gazazello/forcer/badges/coverage.svg)](https://codeclimate.com/github/gazazello/forcer/coverage)
 
 forcer is a ruby command line application and gem designed to help force.com developers who utilize git and proper development process that includes:
 
@@ -12,9 +13,8 @@ forcer is a ruby command line application and gem designed to help force.com dev
 advantages over traditional ant scripts:
 
 1. Configurability
-2. Easy integration with CI (i.e. Jenkins) 
-3. Commands for specific tasks (i.e. delete components or rename components)
-4. Easily add REST Api functionality (i.e. load initial data after new org created)
+2. Commands for specific tasks (i.e. delete components or rename components)
+3. Easily add REST Api functionality (i.e. load initial data after new org created)
 
 
 This project is inspired by metaforce. It turned out to be easier to start my own project after trying to understand how metaforce
@@ -25,8 +25,9 @@ of files. I admit that my code is not perfect and far from professional ruby sty
 But please lets keep this tool simple with only necessary commands and functionality.
 
 ## System Requirements
-Mac OS or Linux
-ruby 2.1.2 or later
+OS: Mac OS or Linux
+
+Ruby version: 2.1.2 or later
 
 ## Installation
 
@@ -194,10 +195,11 @@ Please note that messages and language can and will change because the app devel
 
 ## Possible problems
 
-1. When we tried to run forcer on ruby version 2.1.5, the app threw exception about missing library "em-http-request". If
-you have ruby version 2.1.5 installed and cannot resolve dependencies, I can only suggest to switch to ruby version
-to 2.1.2 or 2.2.0 or later.
-2.  openssl library version 1.0.2 has problems with ruby 2.2.0 when deploy larger zip-files. In order to fix please follow steps:
+1. When my friend tried to run forcer on ruby version 2.1.5 on Ubuntu, the app threw exception about missing library
+"em-http-request". If you have ruby version 2.1.5 installed and cannot resolve dependencies, probably the simplest
+solution is switching to ruby version to 2.1.2 or 2.2.0 or later.
+2.  openssl library version 1.0.2 on Mac OS (maybe other platforms too) has problems with ruby 2.2.0 when deploy larger
+zip-files. In order to fix please follow steps:
 
         $: brew update
         $: brew uninstall openssl
@@ -214,3 +216,9 @@ to 2.1.2 or 2.2.0 or later.
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+NOTE: You may encounter problems with bundler and code-climate if run rspec. The easiest solution is to comment out
+these two lines in file spec_helper.rb :
+
+    require "codeclimate-test-reporter"
+    CodeClimate::TestReporter.start
