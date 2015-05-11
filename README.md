@@ -128,7 +128,8 @@ forcer is a flexible tool that allows developers:
 - Exclude certain XML elements from deployment. For example all references to "Social..." layouts (excluded by default) in profiles fail deployments.
 
     #### How to exclude XML elements (snippets) from deployment?
-    Name of the file is "exclude_xml_nodes.yml".
+    Name of the file is "exclude_xml_nodes.yml". Goal is to deploy the file/component but filter certain known XML elements
+    from teh file.
     
     #### Sample "exclude_xml_nodes.yml":
     
@@ -208,7 +209,20 @@ zip-files. In order to fix please follow steps:
         $: rvm remove 2.2.0
         $: rvm install 2.2.0 --with-openssl-dir=`brew --prefix openssl`
         
-3. Contributors may encounter problems with bundler and code-climate if run rspec. The easiest solution is to comment out
+3. Most probably users will make multiple attempts before the very first deployment succeeds. The reason is Salesforce has
+numerous specific features in metadata deployment. And users of forcer gem will have to:
+
+    * skip/remove certain components from deployment (manually or using exclude_components.xml)
+    * filter out certain XML elements from deployment (manually or using exclude_xml_nodes.xml)
+    * "username not exist" errors. There are various possible solutions including *sed* program. Example for profiles:
+    
+        find . -type f -name '*.profile' -exec sed -i '' s/username_org1/username_org2/ {} +
+        
+    * API version differences between orgs can create issues
+    * Salesforce updates can make your current project folder undeployable sometimes
+    * other problems requiring modification of XML files
+        
+4. Contributors may encounter problems with bundler and code-climate if run rspec. The easiest solution is to comment out
 these lines in file spec_helper.rb :
 
         if Gem.available?("codeclimate-test-reporter")
