@@ -20,10 +20,10 @@ module Metadata
       prepare_xml_nodes_to_exclude
     end
 
-    # copy files from original directory to be xml_filtered later
+    # copy files from original directory to be xml_filtered when creating zip
     # Create zip file with contents of force.com project
     # Return absolute path to the file
-    def write
+    def make_project_zip
       begin
         @zip_io = Zip::File.open(@output_file_name, Zip::File::CREATE)
         raise "package.xml NOT FOUND" unless verify_package_xml
@@ -39,8 +39,8 @@ module Metadata
         write_entries(entries, "")
       ensure
         @zip_io.close # close before deleting tmpdir, or NOT_FOUND exception
-        p "deleting temporary copy of project folder"
         FileUtils.remove_entry(tmpdir)
+        p "deleted temporary copy of project folder"
       end
 
       return @output_file_name
@@ -58,25 +58,35 @@ module Metadata
           break
         end
       end
-      raise Exception if @input_dir_name.empty?
+      raise "'src' directory NOT FOUND" if @input_dir_name.empty?
     end
 
-    def prepare_files_to_exclude()
+    def prepare_files_to_exclude
       exclude_filename = @args[:exclude_components]
-      if exclude_filename.nil? || exclude_filename.empty? || not(File.exists?(exclude_filename))
+
+      # if not specified, load default exclude_components.yml
+      if exclude_filename.nil? || !(File.exists?(exclude_filename))
+        p "using default exclude_components.yml"
         exclude_filename = File.expand_path("../exclude_components.yml", __FILE__)
+      else
+        p "using exclude_components.yml from forcer_config"
       end
 
-      @files_to_exclude = Set.new()
+      @files_to_exclude = Set.new
       YAML.load_file(exclude_filename).each do |name|
         @files_to_exclude.add(name.to_s.downcase)
       end
     end
 
-    def prepare_xml_nodes_to_exclude()
+    def prepare_xml_nodes_to_exclude
       exclude_filename = @args[:exclude_xml]
-      if exclude_filename.nil? || exclude_filename.empty? || not(File.exists?(exclude_filename))
+
+      # if not specified, load default exclude_xml_nodes.yml
+      if exclude_filename.nil? || !(File.exists?(exclude_filename))
+        p "using default exclude_xml_nodes.yml"
         exclude_filename = File.expand_path("../exclude_xml_nodes.yml", __FILE__)
+      else
+        p "using exclude_xml_nodes.yml from forcer_config"
       end
 
       @snippets_to_exclude = YAML.load_file(exclude_filename)

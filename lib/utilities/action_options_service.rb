@@ -12,21 +12,23 @@ module Forcer
         options.store(k.to_sym, v)
       end
 
-      if options[:config_dir].nil? || !(Dir.exists?(File.expand_path(options[:config_dir], __FILE__)))
+      if options[:configs].nil? || !(Dir.exists?(File.expand_path(options[:configs], __FILE__)))
         p "config folder not specified or not found"
-        options[:config_dir] = Dir.pwd + "/forcer_config"
-        p "config folder in CURRENT DIRECTORY ? => #{Dir.exists?(options[:config_dir])}"
+        options[:configs] = Dir.pwd + "/forcer_config"
+        p "config folder in CURRENT DIRECTORY ? => #{Dir.exists?(options[:configs])}"
       else
         p "specified config folder FOUND"
-        options[:config_dir] = File.expand_path(options[:config_dir], __FILE__)
+        options[:configs] = File.expand_path(options[:configs], __FILE__)
       end
 
       load_login_info(options)
 
-      # load_exclude_info(options)
+      add_exclude_paths(options)
 
       return options
     end
+
+    private
 
     class << self
 
@@ -34,12 +36,12 @@ module Forcer
       # if forcer_config/configuration.yml not found, then try configuration.yml in current directory
       def load_login_info(options = {})
 
-        if !(options[:config_dir].nil?) && File.exists?(File.join(options[:config_dir], "/configuration.yml"))
+        if !(options[:configs].nil?) && File.exists?(File.join(options[:configs], "/configuration.yml"))
           p "CONFIGURATION.YML with org details FOUND in CONFIG FOLDER"
-          config_file_path = File.join(options[:config_dir], "/configuration.yml")
+          config_file_path = File.join(options[:configs], "/configuration.yml")
           options[:login_info_path] = config_file_path
         else
-          p "attempt to load CONFIGURATION.YML from CURRENT DIRECTORY"
+          p "loading CONFIGURATION.YML from CURRENT DIRECTORY"
           config_file_path = File.join(Dir.pwd, "/configuration.yml")
         end
 
@@ -55,6 +57,19 @@ module Forcer
         end
         options[:host] = "https://#{options[:host]}" unless options[:host].include?("http")
       end # load_login_info
+
+
+      # add absolute paths to exclude_... files from focer_config directory
+      def add_exclude_paths(options = {})
+
+        if !(options[:configs].nil?) && File.exists?(File.join(options[:configs], "/exclude_components.yml"))
+          options[:exclude_components] = File.join(options[:configs], "/exclude_components.yml")
+        end
+
+        if !(options[:configs].nil?) && File.exists?(File.join(options[:configs], "/exclude_xml_nodes.yml"))
+          options[:exclude_xml] = File.join(options[:configs], "/exclude_xml_nodes.yml")
+        end
+      end
 
     end # class << self
 

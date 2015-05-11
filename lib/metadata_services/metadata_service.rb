@@ -59,7 +59,7 @@ module Metadata
     def deploy
       begin
         dir_zip_service = SfdcDirectoryService.new(@args)
-        @zip_name = dir_zip_service.write
+        @zip_name = dir_zip_service.make_project_zip
         blob_zip = Base64.encode64(File.open(@zip_name, "rb").read)
 
         # todo read options from console arguments
@@ -110,7 +110,7 @@ module Metadata
     private
     # login to salesforce and obtain session information
     def login
-      "login request to #{@args[:host]}"
+      p "login request to #{@args[:host]}"
       endpoint_url = @args[:host]
       options = {
         endpoint: "#{endpoint_url}/services/Soap/c/#{API_VERSION}",
@@ -128,6 +128,7 @@ module Metadata
 
       # === login
       response = enterprise_client.call(:login, message: message)
+      p "LOGIN SUCCESSFUL" unless response.body[:login_response][:result][:session_id].nil?
       # todo catch exceptions
       @current_session_id = response.body[:login_response][:result][:session_id]
       @metadata_server_url = response.body[:login_response][:result][:metadata_server_url]

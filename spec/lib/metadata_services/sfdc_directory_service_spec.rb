@@ -16,7 +16,7 @@ describe 'Metadata::SfdcDirectoryService' do
     }
     @directory_service = Metadata::SfdcDirectoryService.new(args)
     @path_package_xml = File.join(@test_project_path, "/project/src/package.xml")
-    @temp_zip_filename = @directory_service.write
+    @temp_zip_filename = @directory_service.make_project_zip
     @zip_file = Zip::File.open(@temp_zip_filename)
   end
 

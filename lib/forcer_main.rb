@@ -5,13 +5,16 @@ require_relative "./metadata_services/metadata_service"
 
 module Forcer
   class ForcerMain < Thor
-    class_option :dest, :aliases => :d, :desc => "Alias of destination sfdc org in your configuration.yml file. If you do not have configuration.yml in current directory, just skip the option."
-    class_option :config_dir, :desc => "Path to configuration directory named 'forcer_config'. Directory must contain
-      files 'exclude_components.yml' and 'exclude_xml_nodes.yml'. Optional file is 'configuration.yml' which, if missing
-      in 'forcer_config', will be loaded from current directory. By default or if not found in specified location,
-      folder 'forcer_config' is assumed to be in the current directory."
+    class_option :dest, :aliases => :d, :desc => "Alias of destination sfdc org in your configuration.yml file. If you "\
+      "do not have configuration.yml in current directory, just skip the option."
 
-    option :source, :aliases => :s, :desc => "Path to folder that contains 'src' directory somewhere. No restriction on exact 'src' location, except it should be somewhere in :sourse."
+    class_option :configs, :desc => "Path to configuration directory named 'forcer_config'. Directory must contain "\
+      "files 'exclude_components.yml' and 'exclude_xml_nodes.yml'. Optional file is 'configuration.yml' which, if missing "\
+      "in 'forcer_config', will be loaded from current directory. By default (or if not found in specified location) "\
+      "folder 'forcer_config' is assumed to be in the current directory. And it is best practice to keep the folder in "\
+      "current project directory. Please read project documentation on github for more information."
+
+    option :source, :aliases => :s, :desc => "Path to folder that contains 'src' directory somewhere. No restriction on exact 'src' location, except it should be somewhere in :source."
     option :checkOnly, :type => :boolean, :aliases => :c, :desc => "Only validates without actual deployment. Default is FALSE."
     option :rollbackOnError, :type => :boolean, :aliases => :b, :desc => "Rolls back whole deployment if error occurs. Default is TRUE."
     option :runAllTests, :type => :boolean, :aliases => :t, :desc => "Make all unit tests run. Default if FALSE. For production deployment it is always true."

@@ -107,11 +107,21 @@ describe 'Forcer::ActionOptionsService' do
       @options = Forcer::ActionOptionsService.load_config(@options)
 
       expect(Dir.exists?(@forcer_config_path)).to be_truthy
-      expect(File.exists?(@forcer_config_path + "/configuration.yml")).to be_truthy
     end
 
     it "loads 'configuration.yml' from 'forcer_config'" do
+      expect(File.exists?(@forcer_config_path + "/configuration.yml")).to be_truthy
       expect(@options[:login_info_path]).to eq(@forcer_config_path + "/configuration.yml")
+    end
+
+    it "adds path to 'exclude_components.yml' from 'forcer_config'" do
+      expect(File.exists?(@forcer_config_path + "/exclude_components.yml")).to be_truthy
+      expect(@options[:exclude_components]).to eq(@forcer_config_path + "/exclude_components.yml")
+    end
+
+    it "adds path to 'exclude_xml_nodes.yml' from 'forcer_config'" do
+      expect(File.exists?(@forcer_config_path + "/exclude_xml_nodes.yml")).to be_truthy
+      expect(@options[:exclude_xml]).to eq(@forcer_config_path + "/exclude_xml_nodes.yml")
     end
 
     after(:all) do
