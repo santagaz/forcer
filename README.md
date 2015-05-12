@@ -111,25 +111,38 @@ It should be in the same directory where you call Forcer or inside "forcer_confi
 is scanned for configuration.yml file, then current directory (if not found in "forcer_config" folder). More about folder
 "forcer_config" at the end of Configuration section.
 
-    $(master): ls
+    $(master): ls -R
+    forcer_config
+    forcer_config/configuration.yml
+    project
+    project/src
+    ...
+
+Alternatively you can rely on default (same for all projects) exclude_... configuration files. And just
+use only "configuration.yml" for your project without folder "forcer_config":
+
+    $(master): ls -R
     ./configuration.yml
+    project
+    project/src
     ...
     
-    $(master): forcer deploy ...
-    
-This allows having separate "configuration.yml" file for each project. If you are calling Forcer from git repo directory
-with project files and keeping the file outside "forcer_config", please add "configuration.yml" to gitignore. This
-should help you avoiding committing sensitive data. For more information on setup and usage of configuration.yml please
-visit wiki pages of this project. 
+Each of two methods above allows having separate "configuration.yml" file for each project.
+
+NOTE: If you are calling Forcer from git repo directory with project files and keeping the file outside
+"forcer_config", please add "configuration.yml" to gitignore. This should help you avoiding committing
+sensitive data. For more information on setup and usage of configuration.yml please visit wiki pages of this project. 
 
 ### Excluding certain metadata from deployment
 Forcer is a flexible tool that allows developers:
     
 - Exclude certain components (metadata files) and even whole folders from deployment. For example object Idea.object (excluded by default) usually fails deployments.
 
-    #### How to exclude components and and whole directories from deployment?
-    Name of the file is "exclude_components.yml".
-    
+    #### How to exclude components and whole directories from deployment?
+    It is possible to make Forcer exclude components and directories by adding name of a "to-be-excluded"
+    component/directory into "exclude_components.yml" configuration file. _This will make Forcer skip the entire 
+    component/directory from deployment._
+     
     #### "exclude_components.yml" contains:
     
         - objects/Idea.object
@@ -150,8 +163,9 @@ Forcer is a flexible tool that allows developers:
 - Exclude certain XML elements from deployment. For example all references to "Social..." layouts (excluded by default) in profiles fail deployments.
 
     #### How to exclude XML elements (snippets) from deployment?
-    Name of the file is "exclude_xml_nodes.yml". Goal is to deploy the file/component but filter certain known XML elements
-    from teh file.
+    It is possible to make Forcer exclude XML elements/snippets from deployment by adding nokogiri
+    search pattern of a "to-be-excluded" XML element/snippet into "exclude_xml_nodes.yml" configuration file.
+    _This will make Forcer deploy components but filter our certain undesired XML elements_.
     
     #### Sample "exclude_xml_nodes.yml":
     
@@ -210,9 +224,11 @@ apparent what "forcer_config" belongs to what project:
     project/src
     ...
     
-Forcer is designed to be used with git. So considering a project directory is git, folder "forcer_config" should be added
-to gitignore. Then it can be reused for any branch or salesforce project. The idea is to switch to any branch and be able
-to deploy it using "forcer_config" in current project git directory.
+Forcer is designed to be used with git. So considering a project directory is in git repo, folder "forcer_config" should be added
+to gitignore. Or if users find it comfortable to share exclude_... configuration files with other team members,
+then at least add "/forcer_config/configuration.yml" to gitignore in order to prevent committing sensitive
+authorization information. But in any scenario "forcer_config" can be reused for any branch or Salesforce project on current computer.
+The idea is to switch to any branch and be able to deploy it using "forcer_config" in current project git directory.
 
 ### Command line examples
 If you already filled configuration.yml correctly then deployments are much faster. Here is a sample command to start deployment of a project in current folder:
