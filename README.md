@@ -4,9 +4,10 @@
 [![Code Climate](https://codeclimate.com/github/gazazello/forcer/badges/gpa.svg)](https://codeclimate.com/github/gazazello/forcer)
 [![Test Coverage](https://codeclimate.com/github/gazazello/forcer/badges/coverage.svg)](https://codeclimate.com/github/gazazello/forcer/coverage)
 
-Forcer is a ruby command line application and gem for operations with Salesforce Metadata (Metadata API)
-faster than traditional ANT tool. Forcer is designed to help Force.com developers who use "proper"
-development process that includes:
+Forcer is a ruby command line app and gem for interaction with Salesforce Metadata (Metadata API).
+Calling deploy and other available metadata commands should be quicker than using traditional ANT tool
+provided by Salesforce. So in some sense Forcer is an open source replacement for ANT migration tool.
+Forcer is designed to help Force.com developers who use "proper" development process that includes:
 
 1. Git (Every deployment and every change to any _tracked_ project component is committed to a git repo)
 1. A separate dev_org\dev_sandbox for every developer
