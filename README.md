@@ -68,7 +68,7 @@ To list options and flags available for each command call help for each operatio
     --checkOnly ...
     ...
 
-To deploy your project (stored in local filesystem) to destination org first from terminal you need to change directory
+To deploy project (stored in local filesystem) to destination org first from terminal users need to change directory
 to project folder that somewhere inside contains folder "src" with all metadata to deploy:
 
     $(master): cd ~/my_workspace/TestProject/
@@ -82,7 +82,8 @@ Here is a very simple deploy command:
     $(master): forcer deploy
     
 This command will start deployment recursively searching for sfdc project source folder "src" and using the first found for deployment.
-Please note that "src" folder must contain a valid package.xml file that you intend to use for deployment.
+
+*NOTE: "src" folder must contain a valid package.xml file intended to be used for deployment.*
 
 
 ## Configuration
@@ -112,7 +113,7 @@ a template content:
       security_token: sample_token2
       
 #### Where should I place "configuration.yml"?
-It should be in the same directory where you call Forcer or inside "forcer_config" folder. First "forcer_config" folder
+It should be in the same directory where users call Forcer or inside "forcer_config" folder. First "forcer_config" folder
 is scanned for configuration.yml file, then current directory (if not found in "forcer_config" folder). More about folder
 "forcer_config" at the end of Configuration section.
 
@@ -123,8 +124,8 @@ is scanned for configuration.yml file, then current directory (if not found in "
     project/src
     ...
 
-Alternatively you can rely on default (same for all projects) exclude_... configuration files. And just
-use only "configuration.yml" for your project without folder "forcer_config":
+Alternatively users can rely on default (same for all projects) exclude_... configuration files. And 
+use only "configuration.yml" for a project without folder "forcer_config":
 
     $(master): ls -R
     ./configuration.yml
@@ -134,9 +135,9 @@ use only "configuration.yml" for your project without folder "forcer_config":
     
 Each of two methods above allows having separate "configuration.yml" file for each project.
 
-NOTE: If users run Forcer from git repo directory with project files and keep the "configuration.yml"
+*NOTE: If users run Forcer from git repo directory with project files and keep the "configuration.yml"
 outside of "forcer_config", then users should add "configuration.yml" to gitignore. This will help to avoid committing
-sensitive data. For more information on setup and usage of configuration.yml please visit wiki pages of this project. 
+sensitive data. For more information on setup and usage of configuration.yml please visit wiki pages of this project.*
 
 ### Excluding certain metadata from deployment
 Forcer is a flexible tool that allows developers:
@@ -242,11 +243,11 @@ authorization information. But in any scenario "forcer_config" can be reused for
     ...
 
 ### Command line examples
-If you already filled configuration.yml correctly then deployments are much faster. Here is a sample command to start deployment of a project in current folder:
+If users already filled configuration.yml correctly then deployments are much faster. Here is a sample command to start deployment of a project in current folder:
 
     $(master): forcer deploy --dest dest_alias_in_configuration_yml
 
-If you want to call validation-only request then, since it is part of "deploy" soap call, you need to just add flag --checkOnly :
+In case users want to call validation-only request then, since it is part of "deploy" soap call, they need to simply dd flag --checkOnly :
 
     $(master): forcer deploy --dest dest_alias_in_configuration_yml --checkOnly
 
@@ -269,11 +270,11 @@ Please note that messages and language can and will change because the app devel
 
 ## Possible problems
 
-1. When my friend tried to run Forcer on ruby version 2.1.5 on Ubuntu, the app threw exception about missing library
-"em-http-request". If you have ruby version 2.1.5 installed and cannot resolve dependencies, probably the simplest
-solution is switching to ruby version to 2.1.2 or 2.2.0 or later.
+1. When test run Forcer on ruby version 2.1.5 on Ubuntu, the app threw exception about missing library
+"em-http-request". If installed ruby version is 2.1.5 and dependencies cannot be resolved, probably the simplest
+solution is to switch ruby version to 2.1.2 or 2.2.0 or later.
 2. openssl library version 1.0.2 on Mac OS (maybe other platforms too) has problems with ruby 2.2.0 when deploy larger
-zip-files. In order to fix please follow steps:
+zip-files. These are steps to fix the issue on Mac OS:
 
         $(master): brew update
         $(master): brew uninstall openssl
@@ -282,8 +283,9 @@ zip-files. In order to fix please follow steps:
         $(master): rvm remove 2.2.0
         $(master): rvm install 2.2.0 --with-openssl-dir=`brew --prefix openssl`
         
-3. Most probably users will make multiple attempts before the very first deployment succeeds. The reason is Salesforce has
-numerous specific features in metadata deployment. And users of Forcer gem will have to:
+3. Most probably users will have to make multiple attempts before the very first deployment succeeds.
+The reason is Salesforce has numerous specific features in metadata deployment. And users of Forcer
+gem will have to:
 
     * skip/remove certain components from deployment (manually or using exclude_components.xml)
     * filter out certain XML elements from deployment (manually or using exclude_xml_nodes.xml)
@@ -292,7 +294,7 @@ numerous specific features in metadata deployment. And users of Forcer gem will 
         find . -type f -name '*.profile' -exec sed -i '' s/username_org1/username_org2/ {} +
         
     * API version differences between orgs can create issues
-    * Salesforce updates can make your current project folder undeployable sometimes
+    * Salesforce updates can make current project folder undeployable sometimes
     * other problems requiring modification of XML files
         
 4. Contributors may encounter problems with bundler and code-climate if run rspec. The easiest solution is to comment out
