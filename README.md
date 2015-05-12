@@ -4,24 +4,28 @@
 [![Code Climate](https://codeclimate.com/github/gazazello/forcer/badges/gpa.svg)](https://codeclimate.com/github/gazazello/forcer)
 [![Test Coverage](https://codeclimate.com/github/gazazello/forcer/badges/coverage.svg)](https://codeclimate.com/github/gazazello/forcer/coverage)
 
-Forcer is a ruby command line application and gem designed to help force.com developers who utilize git and proper development process that includes:
+Forcer is a ruby command line application and gem for operations with Salesforce Metadata (Metadata API)
+faster than traditional ANT tool. Forcer is designed to help Force.com developers who use "proper"
+development process that includes:
 
-1. every developer should have a separate dev_org\dev_sandbox
-2. code reviews
-3. parallel development of multiple features by a single developer
+1. Git (Every deployment and every change to any _tracked_ project component is committed to a git repo)
+1. A separate dev_org\dev_sandbox for every developer
+2. Parallel development of multiple features by a single developer (can use single Dev Org)
+3. Code reviews
 
-advantages over traditional ant scripts:
+
+Advantages over traditional ANT tool scripts:
 
 1. Configurability
 2. Commands for specific tasks (i.e. delete components or rename components)
-3. Easily add REST Api functionality (i.e. load initial data after new org created)
+3. Easily adding REST Api functionality (i.e. load initial data after new org created)
 
 
-This project is inspired by metaforce. It turned out to be easier to start my own project after trying to understand how metaforce
-is written and attempting to contribute into it. So after days of reading metaforces code and trying to understand, how
-SOAP api calls are done to salesforce and how 'thor' is used to create command line app, I was ready to write my own tool.
-The idea is to make structure of Forcer simpler than metaforce and let contributors understand code by reading smaller amount
-of files. I admit that my code is not perfect and far from professional ruby styles, so I will be glad if you help me.
+This project is written in Ruby and inspired by Metaforce. It turned out to be easier to start my own project after trying to understand how Metaforce
+is written and attempting to contribute into it. So after days of reading Metaforce's code and trying to understand, how
+SOAP api calls are done to Salesforce and how 'thor' is used to create command line app, I was ready to write my own tool.
+The idea is to make structure of Forcer simpler than Metaforce and let contributors understand code by reading smaller amount
+of files. I admit that my code is not perfect and far from professional ruby styles, so help is appreciated.
 But please lets keep this tool simple with only necessary commands and functionality.
 
 ## System Requirements
@@ -31,7 +35,7 @@ Ruby version: 2.1.2 or later
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add this line to application's Gemfile:
 
 ```ruby
 gem 'forcer'
@@ -41,13 +45,13 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
+Alternatively install it as:
 
     $ gem install forcer
 
 ## Usage
 Currently the app is tested and being used only on Mac OS and Linux (I used Ubuntu). I have NOT tested on Windows yet, but
-if you try and report results on Windows, other developers would be thankful.
+if help in testing and reporting results for Windows is appreciated by the rest.
 
 Call help to list all available operations for Forcer:
 
@@ -129,8 +133,8 @@ use only "configuration.yml" for your project without folder "forcer_config":
     
 Each of two methods above allows having separate "configuration.yml" file for each project.
 
-NOTE: If you are calling Forcer from git repo directory with project files and keeping the file outside
-"forcer_config", please add "configuration.yml" to gitignore. This should help you avoiding committing
+NOTE: If users run Forcer from git repo directory with project files and keep the "configuration.yml"
+outside of "forcer_config", then users should add "configuration.yml" to gitignore. This will help to avoid committing
 sensitive data. For more information on setup and usage of configuration.yml please visit wiki pages of this project. 
 
 ### Excluding certain metadata from deployment
@@ -224,11 +228,17 @@ apparent what "forcer_config" belongs to what project:
     project/src
     ...
     
-Forcer is designed to be used with git. So considering a project directory is in git repo, folder "forcer_config" should be added
-to gitignore. Or if users find it comfortable to share exclude_... configuration files with other team members,
-then at least add "/forcer_config/configuration.yml" to gitignore in order to prevent committing sensitive
+Forcer is designed to be used with Git. So considering a project directory is in git repo, folder "forcer_config" should be added
+to gitignore. Alternatively if users want to share exclude_... configuration files with other team members,
+then at least every team member should add "/forcer_config/configuration.yml" to gitignore in order to prevent committing sensitive
 authorization information. But in any scenario "forcer_config" can be reused for any branch or Salesforce project on current computer.
-The idea is to switch to any branch and be able to deploy it using "forcer_config" in current project git directory.
+*The idea is to switch to any branch and be able to deploy it using "forcer_config" in current project git directory.*
+
+    $(master): forcer deploy --dest my_dev_org1
+    ...
+    $(master): git checkout feature_branch1
+    $(feature_branch1): forcer deploy --dest my_dev_org2
+    ...
 
 ### Command line examples
 If you already filled configuration.yml correctly then deployments are much faster. Here is a sample command to start deployment of a project in current folder:
@@ -287,10 +297,8 @@ numerous specific features in metadata deployment. And users of Forcer gem will 
 4. Contributors may encounter problems with bundler and code-climate if run rspec. The easiest solution is to comment out
 these lines in file spec_helper.rb :
 
-        if Gem.available?("codeclimate-test-reporter")
           require "codeclimate-test-reporter"
           CodeClimate::TestReporter.start
-        end
 
 
 ## Contributing
