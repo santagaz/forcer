@@ -13,11 +13,7 @@ module Metadata
     def initialize(args = {})
       @args = args
       @output_file_name = tempfile_name("zip")
-      @files_to_exclude = Set.new()
-      @snippets_to_exclude = {}
       find_source_dir
-      prepare_files_to_exclude
-      prepare_xml_nodes_to_exclude
     end
 
     # copy files from original directory to be xml_filtered when creating zip
@@ -35,7 +31,6 @@ module Metadata
 
         entries = dir_content(@input_dir_name)
         p "excluding specified components from deployment"
-        p "filtering deployment files removing specified XML elements"
         write_entries(entries, "")
       ensure
         @zip_io.close # close before deleting tmpdir, or NOT_FOUND exception
@@ -94,6 +89,7 @@ module Metadata
 
     # Opens file. Removes all bad xml snippets. Rewrites results back into original file
     def filter_xml(filename)
+      prepare_xml_nodes_to_exclude if @snippets_to_exclude.nil?
       doc = Nokogiri::XML(File.read(filename))
       file_modified = false
       @snippets_to_exclude.each do |suffix, expressions|
@@ -119,7 +115,7 @@ module Metadata
       entries.each do |entry|
         # need relative local file path to use in new zip file too
         zip_file_path = (path == "" ? entry : File.join(path, entry)) # maybe without if/else
-        next if @files_to_exclude.include?(zip_file_path.downcase) # avoid if directory/file excluded
+        next if exclude_file?(zip_file_path.downcase)
 
         # need full file path to use in copy/paste
         disk_file_path = File.join(@input_dir_name, zip_file_path)
@@ -129,10 +125,20 @@ module Metadata
           sub_dir = dir_content(disk_file_path)
           write_entries(sub_dir, zip_file_path)
         else
-          filter_xml(disk_file_path)
+          filter_xml(disk_file_path) unless xml_exclusion_skipped_for?(disk_file_path)
           @zip_io.add(zip_file_path, disk_file_path)
         end
       end
+    end
+
+    def exclude_file?(filename)
+      raise Exception if (filename.nil? or filename.empty?)
+      if (@files_to_exclude.nil? or @files_to_exclude.empty?)
+        @files_to_exclude = Set.new()
+        prepare_files_to_exclude
+      end
+
+      return @files_to_exclude.include?(filename)
     end
 
     # Returns array of files for the specified directory (full_path) without current_dir "." and
@@ -173,5 +179,28 @@ module Metadata
         return false
       end
     end
+
+    # check if destination server is Production
+    def is_production
+      return (@args[:host].start_with?("https://login") or @args[:host].start_with?("login"))
+    end
+
+    # By default for Production it only processes package.xml and other files
+    # (objects, profiles, ...) are ignored (xml exclusions are OFF except package.xml). By default
+    # for Sandbox all xml exclusion are turned ON. Package.xml exclusions are OK because they allow
+    # skip deployment of certain objects/files.
+    # To turn ON all xml exclusion for Production, set --forcerExclude to TRUE
+    # To turn OFF absolutely all exclusions (package.mxl too), set --skipExclude to TRUE
+    def xml_exclusion_skipped_for?(full_filename)
+      raise Exception if (full_filename.nil? or full_filename.empty?)
+      return true if @args[:skipExclude]
+
+      if full_filename.end_with?("package.xml")
+        return false
+      else
+        return (is_production unless @args[:forceExclude])
+      end
+    end
   end # class SfdcDirectoryService
+
 end # module Metadata

@@ -9,9 +9,12 @@ describe 'Metadata::SfdcDirectoryService' do
     init_directory_service("test.salesforce.com")
   end
 
+  before(:is_production => true) do
+    init_directory_service("login.salesforce.com")
+  end
+
   after(:all) do
-    FileUtils.rm_rf @temp_zip_filename if File.exists?(@temp_zip_filename)
-    @zip_file.close
+    clean
   end
 
   describe "#write" do
@@ -49,11 +52,7 @@ describe 'Metadata::SfdcDirectoryService' do
     end
   end
 
-  # by default tests run for sandbox
   describe "xml filter" do
-    before(:is_production => true) do
-      init_directory_service("login.salesforce.com")
-    end
 
     it "extracts xml snippet from file for sandbox" do
       doc = Nokogiri::XML(@zip_file.read('profiles/Admin.profile'))
@@ -62,7 +61,6 @@ describe 'Metadata::SfdcDirectoryService' do
 
     it "ignores exclude_xml for production", is_production: true do
       doc = Nokogiri::XML(@zip_file.read('profiles/Admin.profile'))
-      expect(@args[:host]).to start_with("login")
       expect(doc.search("*//layoutAssignments/layout[starts-with('Social')]")).to_not be_empty
     end
 
@@ -93,5 +91,10 @@ describe 'Metadata::SfdcDirectoryService' do
     Zip::File.foreach(zip_filename) do |entry|
       pp "==== #{entry}"
     end
+  end
+
+  def clean
+    FileUtils.rm_rf @temp_zip_filename if File.exists?(@temp_zip_filename)
+    @zip_file.close
   end
 end
