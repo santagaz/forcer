@@ -144,44 +144,44 @@ Forcer is a flexible tool that allows developers:
     
 ### Exclude components (metadata files) and even whole folders from deployment. For example object Idea.object (excluded by default) usually fails deployments.
     
-    #### How to exclude components and whole directories from deployment?
-    It is possible to make Forcer exclude components and directories by adding name of a "to-be-excluded"
-    component/directory into "exclude_components.yml" configuration file. _This will make Forcer skip the entire
-    component/directory from deployment._
-    
-    #### "exclude_components.yml" contains:
-    
-        - objects/Idea.object
-        - layouts/SocialPersona-Social Persona Layout.layout
-        - layouts/SocialPost-Social Post Layout.layout
-        - profiles # excludes whole profiles directory
-    
-    #### Where should I place "exclude_components.yml"?
-    Users should use separate "exclude_components.yml" for each project. So best practice is to keep it in folder
-    "forcer_config". Read more about it at the end of Configuration section.
-    
-    Forcer is released with default "exclude_components.yml". If "forcer_config" is not specified, then Forcer will use the
-    default file. Users (developers) can modify or replace values to exclude certain components or folders:
-    
-        [your_ruby_version_location (like ".../rvm/gems/ruby-[version]")]/gems/forcer-[version]/lib/metadata_services/exclude_components.yml
+#### How to exclude components and whole directories from deployment?
+It is possible to make Forcer exclude components and directories by adding name of a "to-be-excluded"
+component/directory into "exclude_components.yml" configuration file. _This will make Forcer skip the entire
+component/directory from deployment._
+
+#### "exclude_components.yml" contains:
+
+    - objects/Idea.object
+    - layouts/SocialPersona-Social Persona Layout.layout
+    - layouts/SocialPost-Social Post Layout.layout
+    - profiles # excludes whole profiles directory
+
+#### Where should I place "exclude_components.yml"?
+Users should use separate "exclude_components.yml" for each project. So best practice is to keep it in folder
+"forcer_config". Read more about it at the end of Configuration section.
+
+Forcer is released with default "exclude_components.yml". If "forcer_config" is not specified, then Forcer will use the
+default file. Users (developers) can modify or replace values to exclude certain components or folders:
+
+    [your_ruby_version_location (like ".../rvm/gems/ruby-[version]")]/gems/forcer-[version]/lib/metadata_services/exclude_components.yml
     
 
 ### Exclude XML elements from deployment. For example all references to "Social..." layouts (excluded by default) in profiles fail deployments.
     
-    #### IMPORTANT NOTE! By default XML exclusion works only when deploy to sandboxes. You can force XML exclusion
-    when deploying to production using *--forceExclude* flag. Run _forcer help deploy_ to see all options.
-    *Excluding XML snippets for production deployment can cause loss of data*. Also be aware if you exclude
-    the whole node like field or weblink (assuming that node exists in target org), that node will be preserved
-    intact in the target org. But if you skip a sub-node of that parent node (like removing lookupFilter)
-    then it considered as modifying existing node and that node will be overwritten in target org. So
-    if you cannot deploy part of node it might be a good idea to skip deployment of whole node or file.
+**IMPORTANT NOTE! By default XML exclusion works only when deploy to sandboxes. You can force XML exclusion
+when deploying to production using *--forceExclude* flag. Run _forcer help deploy_ to see all options.
+*Excluding XML snippets for production deployment can cause loss of data*. Also be aware if you exclude
+the whole node like field or weblink (assuming that node exists in target org), that node will be preserved
+intact in the target org. But if you skip a sub-node of that parent node (like removing lookupFilter)
+then it considered as modifying existing node and that node will be overwritten in target org. So
+if you cannot deploy part of node it might be a good idea to skip deployment of whole node or file.**
+
+#### How to exclude XML elements (snippets) from deployment?
+It is possible to make Forcer exclude XML elements/snippets from deployment by adding nokogiri
+search pattern of a "to-be-excluded" XML element/snippet into "exclude_xml_nodes.yml" configuration file.
+_This will make Forcer deploy components but filter our certain undesired XML elements_.
     
-    #### How to exclude XML elements (snippets) from deployment?
-    It is possible to make Forcer exclude XML elements/snippets from deployment by adding nokogiri
-    search pattern of a "to-be-excluded" XML element/snippet into "exclude_xml_nodes.yml" configuration file.
-    _This will make Forcer deploy components but filter our certain undesired XML elements_.
-    
-    #### Sample "exclude_xml_nodes.yml":
+#### Sample "exclude_xml_nodes.yml":
     
         :".profile":
           - [ "*//layoutAssignments/layout[starts-with('Social')]" , true ]
@@ -210,7 +210,7 @@ Forcer is a flexible tool that allows developers:
     
         - [ "*//tabVisibilities/tab[starts-with('standard-Social')]" , true ]
       
-    #### Where should I place "exclude_xml_nodes.yml"?
+#### Where should I place "exclude_xml_nodes.yml"?
     Users should use separate "exclude_xml_nodes.yml" for each project. So best practice is to keep it in folder
     "forcer_config". Read more about it at the end of Configuration section.
     
