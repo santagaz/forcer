@@ -142,21 +142,21 @@ sensitive data. For more information on setup and usage of configuration.yml ple
 ## Excluding certain metadata from deployment
 Forcer is a flexible tool that allows developers:
     
-### Exclude components (metadata files) and even whole folders from deployment. For example object Idea.object (excluded by default) usually fails deployments.
+#### Exclude components (metadata files) and even whole folders from deployment. For example object Idea.object (excluded by default) usually fails deployments.
     
-#### How to exclude components and whole directories from deployment?
+##### How to exclude components and whole directories from deployment?
 It is possible to make Forcer exclude components and directories by adding name of a "to-be-excluded"
 component/directory into "exclude_components.yml" configuration file. _This will make Forcer skip the entire
 component/directory from deployment._
 
-#### "exclude_components.yml" contains:
+##### "exclude_components.yml" contains:
 
     - objects/Idea.object
     - layouts/SocialPersona-Social Persona Layout.layout
     - layouts/SocialPost-Social Post Layout.layout
     - profiles # excludes whole profiles directory
 
-#### Where should I place "exclude_components.yml"?
+##### Where should I place "exclude_components.yml"?
 Users should use separate "exclude_components.yml" for each project. So best practice is to keep it in folder
 "forcer_config". Read more about it at the end of Configuration section.
 
@@ -166,7 +166,7 @@ default file. Users (developers) can modify or replace values to exclude certain
     [your_ruby_version_location (like ".../rvm/gems/ruby-[version]")]/gems/forcer-[version]/lib/metadata_services/exclude_components.yml
     
 
-### Exclude XML elements from deployment. For example all references to "Social..." layouts (excluded by default) in profiles fail deployments.
+#### Exclude XML elements from deployment. For example all references to "Social..." layouts (excluded by default) in profiles fail deployments.
     
 **IMPORTANT NOTE! By default XML exclusion works only when deploy to sandboxes. You can force XML exclusion
 when deploying to production using *--forceExclude* flag. Run _forcer help deploy_ to see all options.
@@ -176,12 +176,12 @@ intact in the target org. But if you skip a sub-node of that parent node (like r
 then it considered as modifying existing node and that node will be overwritten in target org. So
 if you cannot deploy part of node it might be a good idea to skip deployment of whole node or file.**
 
-#### How to exclude XML elements (snippets) from deployment?
+##### How to exclude XML elements (snippets) from deployment?
 It is possible to make Forcer exclude XML elements/snippets from deployment by adding nokogiri
 search pattern of a "to-be-excluded" XML element/snippet into "exclude_xml_nodes.yml" configuration file.
 _This will make Forcer deploy components but filter our certain undesired XML elements_.
     
-#### Sample "exclude_xml_nodes.yml":
+##### Sample "exclude_xml_nodes.yml":
     
         :".profile":
           - [ "*//layoutAssignments/layout[starts-with('Social')]" , true ]
@@ -210,7 +210,7 @@ _This will make Forcer deploy components but filter our certain undesired XML el
     
         - [ "*//tabVisibilities/tab[starts-with('standard-Social')]" , true ]
       
-#### Where should I place "exclude_xml_nodes.yml"?
+##### Where should I place "exclude_xml_nodes.yml"?
     Users should use separate "exclude_xml_nodes.yml" for each project. So best practice is to keep it in folder
     "forcer_config". Read more about it at the end of Configuration section.
     
@@ -250,7 +250,7 @@ authorization information. But in any scenario "forcer_config" can be reused for
     $(feature_branch1): forcer deploy --dest my_dev_org2
     ...
 
-### Command line examples
+##### Command line examples
 If users already filled configuration.yml correctly then deployments are much faster. Here is a sample command to start deployment of a project in current folder:
 
     $(master): forcer deploy --dest dest_alias_in_configuration_yml
