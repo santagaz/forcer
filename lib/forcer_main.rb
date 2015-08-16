@@ -15,6 +15,8 @@ module Forcer
       "current project directory. Please read project documentation on github for more information."
 
     option :source, :aliases => :s, :desc => "Path to folder that contains 'src' directory somewhere. No restriction on exact 'src' location, except it should be somewhere in :source."
+    option :forceExclude, :type => :boolean, :desc => "To turn ON all xml exclusion for Production, set --forcerExclude to TRUE"
+    option :skipExclude, :type => :boolean, :desc => "To turn OFF absolutely all exclusions (package.mxl too), set --skipExclude to TRUE"
     option :checkOnly, :type => :boolean, :aliases => :c, :desc => "Only validates without actual deployment. Default is FALSE."
     option :rollbackOnError, :type => :boolean, :aliases => :b, :desc => "Rolls back whole deployment if error occurs. Default is TRUE."
     option :runAllTests, :type => :boolean, :aliases => :t, :desc => "Make all unit tests run. Default if FALSE. For production deployment it is always true."

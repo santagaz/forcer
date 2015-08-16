@@ -1,8 +1,12 @@
 fake_sandbox:
-  host: fake.salesforce.com
+  host: test.salesforce.com
   username: test_username
   password:
   security_token: test_token
   config_forcer_directory: true
-
-
+fake_production:
+  host: login.salesforce.com
+  username: test_username
+  password:
+  security_token: test_token_prod
+  config_forcer_directory: true

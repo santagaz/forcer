@@ -85,6 +85,7 @@ module Metadata
 
         deploy_request_xml = File.read(File.dirname(__FILE__) + "/deploy_request.xml");
         xml_param = deploy_request_xml % [debug_options_snippet, @current_session_id, blob_zip, deploy_options_snippet]
+        p "Uploading project zip file. This may take a while."
         response = @metadata_client.call(:deploy, :xml => xml_param)
         # todo catch exceptions
 

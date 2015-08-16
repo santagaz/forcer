@@ -36,7 +36,7 @@ describe 'Forcer::ActionOptionsService' do
       describe "#load_config" do
 
         it "loads destination url from yaml" do
-          expect(@options[:host]).to eq("https://fake.salesforce.com")
+          expect(@options[:host]).to eq("https://test.salesforce.com")
         end
 
         it "loads username from yaml" do
